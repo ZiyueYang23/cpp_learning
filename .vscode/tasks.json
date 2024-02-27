@@ -8,7 +8,7 @@
 			   "args": [
 				"${fileDirname}\\*.cpp",
 				"-o",
-				"${fileDirname}\\bin\\${fileBasenameNoExtension}.exe",
+				"${fileDirname}\\${fileBasenameNoExtension}.exe",
 				"-g"
 			   ],
 			// "args": [
