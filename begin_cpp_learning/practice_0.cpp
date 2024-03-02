@@ -79,13 +79,12 @@ void AndOne(int a, int b = 1)
 
 #endif
 
-
 //@ 函数重载
-//c++中允许函数重名，需要注意的是形参必须不同（个数，类型）
-//！ 注意不能仅仅是返回值类型不同，编译器根据形参来判断你到底调用的是哪一个函数
+// c++中允许函数重名，需要注意的是形参必须不同（个数，类型）
+// ！ 注意不能仅仅是返回值类型不同，编译器根据形参来判断你到底调用的是哪一个函数
 
 //@ 函数模板
-//前面提及到在c++中函数可以同名，但是例如遇到要写Add这个函数有时候是int类型，有时候是double类型的
+// 前面提及到在c++中函数可以同名，但是例如遇到要写Add这个函数有时候是int类型，有时候是double类型的
 #if 0
 #include <iostream>
 #include <string>
@@ -116,7 +115,6 @@ double Add(double a,double b)
 //上述代码就是展现弊端引出函数模板
 #endif
 
-
 #if 0
 #include <iostream>
 #include <string>
@@ -145,15 +143,11 @@ int main(void)
 
 #endif
 
-
-//class是类，是概念
-//object是对象是具体实物从属于某类
-//c++中对象是由对象构成，对象与另外对象的关系是告诉对方what to do而不是how to do，就是你要干啥不是怎么做，怎么做是你的事情，我告诉你我只是传达指令，传递信息。所有对象都有类型，所有可以归类的对象都具有相应的特征。反过来几个对象都有同一特征我们把它归类
-//所有目录名文件用字母用小写_来链接
-//类的名字首字母都大写
-//函数小驼峰，动词＋名词的形式
-
-
+// class是类，是概念
+// object是对象是具体实物从属于某类
+// c++中对象是由对象构成，对象与另外对象的关系是告诉对方what to do而不是how to do，就是你要干啥不是怎么做，怎么做是你的事情，我告诉你我只是传达指令，传递信息。所有对象都有类型，所有可以归类的对象都具有相应的特征。反过来几个对象都有同一特征我们把它归类
+// 所有目录名文件用字母用小写_来链接
+// 类的名字首字母都大写
 
 #if 0
 //函数参数缺省代码片段
@@ -190,3 +184,79 @@ void maxScore(int subject1, int subject2, int subject3)
 
 #endif
 
+#if 0
+//命名空间注释代码
+namespace my_namespace
+{
+    int number;
+    double val;
+
+    // 这里是在命名空间内部进行函数定义
+    void Func_1()
+    {
+        cout << number << endl;
+    }
+
+    // 此处是声明，如果说我想拿到命名空间外面去定义函数该如何做呢
+    void Func_2();
+
+    // 同理还可以继续嵌套命名空间，但是注意不能在主函数里面进行定义命名空间
+
+    // 注意最后是没有;的，与struct不同。
+}
+
+namespace my_namespace
+{
+    // 这里与上面的定义同属于my_namespace，可以分开定义
+    char ch;
+}
+
+// 注意此时Func_2与内部并无关系，两个是不同的函数
+void Func_2()
+{
+    cout << "hello world!" << endl;
+}
+
+// 如果在命名空间外要定义函数需要用::,此时定义的就是上述命名空间里的函数
+void my_namespace::Func_2()
+{
+    cout << "hello world!" << endl;
+}
+
+#endif
+
+#if 1
+//new and delete 
+
+#include <iostream>
+
+using namespace std;
+
+int main(void)
+{
+    //第一种形式
+    int *p_number_1 = new int;   ///< new返回值是一个地址
+    *p_number_1 = 1;
+    cout << *p_number_1 << endl;
+
+    //第二种形式
+    int *p_number_2 = new int(2);   ///<在定义时就完成初始化
+    cout << *p_number_2 << endl;
+
+    //第三种形式
+    int *p_number_arr = new int[10];   ///<注意这个地方就不能在加（）给初始值了
+
+    for (int i = 0; i < 10; i++)
+    {
+        p_number_arr[i] = i;
+        cout << p_number_arr[i] << " ";
+    }
+
+    delete p_number_1;
+    delete p_number_2;
+    delete[] p_number_arr;   ///<这个地方注意批量删除时需要加delete[] ...，并且需要注意的时后面跟的必须是申请的首地址。
+
+    return 0;
+}
+
+#endif
