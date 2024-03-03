@@ -225,8 +225,8 @@ void my_namespace::Func_2()
 
 #endif
 
-#if 1
-//new and delete 
+#if 0
+//new and delete
 
 #include <iostream>
 
@@ -257,6 +257,127 @@ int main(void)
     delete[] p_number_arr;   ///<这个地方注意批量删除时需要加delete[] ...，并且需要注意的时后面跟的必须是申请的首地址。
 
     return 0;
+}
+
+#endif
+
+#if 0
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class People
+{
+public:
+    string name_str_;
+    int age_;
+
+    // 此处去类外面完成函数定义
+    void SpeakMyName();
+    void SetWeight(int weight)
+    {
+        weight_kg_ = weight;
+    }
+
+private:
+    int height_;
+    int weight_kg_;
+
+    void SpeakMyHeight()
+    {
+        cout << "My height is " << height_ << endl;
+    }
+};
+
+// 注意此处需要加People，否则为全局函数。
+void People::SpeakMyName()
+{
+    // 此处在类外部也可以用weight_kg_,函数体也算类里。
+    cout << "My name is " << name_str_ << ",My weight is " << weight_kg_ << "kg." << endl;
+}
+
+int main(void)
+{
+    People z_y;
+    z_y.name_str_ = "z_y";
+    z_y.age_ = 18;
+    // 此处只能通过加一个函数来动私有的变量
+    z_y.SetWeight(70);
+    z_y.SpeakMyName();
+
+    // 也可以通过指针来使用
+    People *p_z_y = &z_y;
+    p_z_y->age_ = 19;
+    p_z_y->SetWeight(65);
+
+    return 0;
+}
+
+#endif
+
+
+#if 0
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main(void)
+{
+    string text_str;
+    char ch;
+
+    // 可以直接等于
+    text_str = "That is so coll";
+    // 可以直接根据下表进行访问 
+    ch = text_str[0];
+    cout << ch << endl;
+    // 这个是输出第几个值
+    ch = text_str.at(1);
+    cout << ch << endl;
+    // 这个是计算长度
+    cout << text_str.length();
+    // 这个是帮忙清空字符串
+    text_str.clear();
+    // 这个是判断是否为空
+    text_str.empty();
+
+
+    return 0;
+}
+
+#endif
+
+
+#if 1
+#include <iostream>
+
+using namespace std;
+
+class MyClass
+{
+public:
+    int num;
+    MyClass()
+    {
+        cout << "MyClass" << endl;
+    }
+    MyClass(int n, int v);
+
+private:
+    int val;
+};
+
+// 注意此处从类调用构造函数
+MyClass::MyClass(int n,int v)
+{
+    cout << "MyClass::MyClass()" << endl;
+}
+int main(void)
+{
+    MyClass learn_text_0;        ///< 这叫无参构造，注意此处不能加括号，尽管你括号里面不传值，想着调用那个 MyClass() 函数，结果是不会调用。(why?)
+    MyClass learn_text_1(1,2);   ///<这叫有参构造，后面加一个括号就直接把两个变量给完成初始化，是在对象创造完之后就会调用。
 }
 
 #endif
