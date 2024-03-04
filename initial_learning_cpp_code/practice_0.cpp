@@ -316,7 +316,6 @@ int main(void)
 
 #endif
 
-
 #if 0
 #include <iostream>
 #include <string>
@@ -349,8 +348,7 @@ int main(void)
 
 #endif
 
-
-#if 1
+#if 0
 #include <iostream>
 
 using namespace std;
@@ -361,9 +359,12 @@ public:
     int num;
     MyClass()
     {
+        // 这里给初始化的值
+        num = 99;
+        val = 98;
         cout << "MyClass" << endl;
     }
-    MyClass(int n, int v);
+    MyClass(int n, int v = 3);   ///< 也可以使用参数缺省
 
 private:
     int val;
@@ -372,12 +373,248 @@ private:
 // 注意此处从类调用构造函数
 MyClass::MyClass(int n,int v)
 {
+    // 传值进去给初始值
+    num = n;
+    val = v;
     cout << "MyClass::MyClass()" << endl;
 }
 int main(void)
 {
     MyClass learn_text_0;        ///< 这叫无参构造，注意此处不能加括号，尽管你括号里面不传值，想着调用那个 MyClass() 函数，结果是不会调用。(why?)
-    MyClass learn_text_1(1,2);   ///<这叫有参构造，后面加一个括号就直接把两个变量给完成初始化，是在对象创造完之后就会调用。
+    learn_text_0.num = 100;
+
+    // 参数缺省
+    MyClass learn_text_1(1);   ///<这叫有参构造，后面加一个括号就直接把两个变量给完成初始化，是在对象创造完之后就会调用。
+    cout << learn_text_1.num<< endl;
+
+    // 也可以调用指针， new 一块堆区内存
+    MyClass *p_my_class = new MyClass(8, 9);
+    cout << p_my_class->num << endl;
+
+    delete p_my_class;
+}
+
+#endif
+
+#if 0
+// 这是探究如何给类中的常量完成初始化的代码
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class WitStudent
+{
+public:
+    string student_name_;
+    const int kStudentId;
+    const int kStudentNum;
+
+public:
+    // 基本语法就是 class(形参1，形参2):常量名(形参1)，常量名(形参2)，常量名(0（也可以直接给值）)。
+    WitStudent(int student_num) : kStudentNum(student_num), kStudentId(0)
+    {
+        cout << kStudentNum << endl
+             << kStudentId << endl;
+    }
+};
+
+int main(void)
+{
+    // 由于此处没有“低保”了，调用构造函数就必须要传值进去。
+    WitStudent z_y(1);
+
+    z_y.student_name_ = "z_y";
+    cout << z_y.student_name_ << endl;
+
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是探究如何给类中的常量完成初始化的代码
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class WitStudent
+{
+public:
+    string student_name_;
+    const int kStudentId;
+    const int kStudentNum;
+
+public:
+    WitStudent(int student_num);
+};
+
+// 基本语法就是 class(形参1，形参2):常量名(形参1)，常量名(形参2)，常量名(0（也可以直接给值）)。
+WitStudent::WitStudent(int student_num) : kStudentNum(student_num), kStudentId(0)
+{
+    cout << kStudentNum << endl
+         << kStudentId << endl;
+}
+
+int main(void)
+{
+    // 由于此处没有“低保”了，调用构造函数就必须要传值进去。
+    WitStudent z_y(1);
+
+    z_y.student_name_ = "z_y";
+    cout << z_y.student_name_ << endl;
+
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是学习析构函数的代码
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class WitStudent
+{
+public:
+    string wit_student_name_;
+    const int kWitStudentNum;
+    const int kWitStudentId;
+
+public:
+    // 构造函数声明
+    WitStudent(int wit_student_num, int flag);
+    // 析构函数声明
+    ~WitStudent();
+};
+
+// 构造函数定义
+WitStudent::WitStudent(int wit_student_num, int flag) : kWitStudentNum(wit_student_num), kWitStudentId(0)
+{
+    cout << "WitStudent" << flag << endl;
+}
+
+WitStudent::~WitStudent()
+{
+    cout << "~WitStudent" << endl;
+}
+
+int main(void)
+{
+    cout << "flag~~~~~" << endl;
+    // 这里多传一个flag进去看先后，这是栈区对象
+    WitStudent z_y(1, 1);
+    cout << "flag~~~~~" << endl;
+
+    cout << "flag~~~~~" << endl;
+    // 这是堆区对象
+    WitStudent *p_just_name = new WitStudent(9, 2);
+    cout << "flag~~~~~" << endl;
+    p_just_name->wit_student_name_ = "m_t";
+
+    // 此处结束堆区对象的生命周期
+    delete p_just_name;
+    cout << "flag~~~~~" << endl;
+
+    // 请注意时对象的生命周期结束在调用析构函数，而不是因为调用析构函数对象才结束周期的。
+    return 0;
+}
+
+#endif
+
+#if 1
+// 这是探究构造函数的代码
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Monster
+{
+public:
+    string monster_name_;
+    int monster_hp_;
+    double monster_speed_;
+
+public:
+    Monster();                                                     ///< 无参构造函数
+    Monster(string m_name, int m_hp = 100, double m_speed = 10.1); ///< 有参并且参数缺省构造函数
+    ~Monster();                                                    ///< 析构函数
+    Monster(Monster &obj);                                         ///< 拷贝构造函数
+    Monster(Monster &obj, int m_hp);                               ///< 拷贝构造函数
+};
+
+void TextFun1(Monster obj);
+Monster TextFun2();
+
+// 无参构造
+Monster::Monster()
+{
+    monster_name_ = "无名氏";
+    monster_hp_ = 99;
+    monster_speed_ = 10.0;
+
+    cout << "无参构造" << endl;
+}
+// 有参构造
+Monster::Monster(string m_name, int m_hp, double m_speed)
+{
+    monster_name_ = m_name;
+    monster_hp_ = m_hp;
+    monster_speed_ = m_speed;
+
+    cout << "有参构造函数" << endl;
+}
+// 析构函数
+Monster::~Monster()
+{
+    cout << "析构函数" << endl;
+}
+// 拷贝构造函数1号
+Monster::Monster(Monster &obj)
+{
+    monster_name_ = obj.monster_name_;
+    monster_hp_ = obj.monster_hp_;
+    monster_speed_ = obj.monster_speed_;
+
+    cout << "拷贝构造函数1号" << endl;
+}
+// 拷贝构造函数2号
+Monster::Monster(Monster &obj, int m_hp)
+{
+    monster_name_ = obj.monster_name_;
+    monster_hp_ = m_hp;
+    monster_speed_ = obj.monster_speed_;
+
+    cout << "拷贝构造函数2号" << endl;
+}
+
+void TextFun1(Monster obj)
+{
+    cout << "flag" << endl;
+}
+Monster TextFun2()
+{
+    Monster obj;
+    return obj;
+}
+
+int main(void)
+{
+    Monster m0;
+    TextFun1(m0);
+
+    TextFun2();
+    // 这里gcc不给过，在vs里面可以
+    Monster monster = TextFun2();
+
+    return 0;
 }
 
 #endif
