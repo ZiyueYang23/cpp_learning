@@ -528,8 +528,9 @@ int main(void)
 
 #endif
 
-#if 1
+#if 0
 // 这是探究构造函数的代码
+
 #include <iostream>
 #include <string>
 
@@ -597,6 +598,7 @@ Monster::Monster(Monster &obj, int m_hp)
 
 void TextFun1(Monster obj)
 {
+
     cout << "flag" << endl;
 }
 Monster TextFun2()
@@ -612,7 +614,193 @@ int main(void)
 
     TextFun2();
     // 这里gcc不给过，在vs里面可以
-    Monster monster = TextFun2();
+    // Monster monster = TextFun2();
+
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是探究 this 指针
+// 初版本
+
+#include <iostream>
+
+using namespace std;
+
+class MyClass
+{
+    // 默认private
+    int num;
+
+public:
+    void SetNum(int n)
+    {
+        num = n;
+    }
+    int Print()
+    {
+        return num;
+    }
+};
+
+int main(void)
+{
+    MyClass c;
+    c.SetNum(1);
+    cout << c.Print() << endl;
+    return 0;
+}
+#endif
+
+#if 0
+// 这是探究 this 指针
+// 引出this
+
+#include <iostream>
+
+using namespace std;
+
+class MyClass
+{
+    // 默认private
+    int num;
+
+public:
+    // 如果我把形参的名字也给成num会如何呢?
+    // 其实每一次系统都会默认给你类指针this不需要自己加。
+    // void SetNum(MyClass *this, num)
+    void SetNum(int num)
+    {
+        // 有趣的是下面这种直接num=num，输出结果为0(why?)
+        // num = num;
+        this->num = num;
+    }
+    int Print()
+    {
+        this->num = 0;
+        cout << num << endl;
+        this->SetNum(3);
+        (*this).SetNum(4);
+        cout << num << endl;
+
+        // 这里的返回值也不单单是num而应该是this->num,只不过一般把他们省略。
+        return num;
+    }
+};
+
+int main(void)
+{
+    MyClass c;
+    c.SetNum(2);
+    cout << c.Print() << endl;
+    return 0;
+}
+#endif
+
+#if 0
+// 这是探究静态数据成员
+
+#include <iostream>
+
+using namespace std;
+class MyClass
+{
+public:
+    MyClass();
+    ~MyClass();
+    static int num;
+};
+
+// 这是正确给初始值的方式，在类的外面。
+int MyClass::num = 0;
+
+MyClass::MyClass()
+{
+    // error 此时num是静态的数据成员，属于公有的。
+    // num = 0;
+
+    //  常用方式是这样的给一个++，就可以知道创建了多少个对象。
+    num++;
+}
+
+MyClass::~MyClass()
+{
+}
+
+int main()
+{
+    MyClass obj_1;
+    cout << "obj_1.num=" << obj_1.num << endl;
+
+    // 可以通过对象访问到num，并且由此可以验证num是共有的，并不属于任何一个对象。
+    obj_1.num = 1;
+
+    MyClass obj_2;
+    cout << "obj_2.num=" << obj_2.num << endl;
+
+    // 尝试输出看看对象内部占几个字节结果是只占一个，由此可见num不在obj_1之中。
+    cout << "sizeof(obj_1)=" << sizeof(obj_1) << endl;
+    // 那为何类也是一个字节呢？这样的测量方式是错误的，sizeof不能直接测量类的大小。
+    cout << "sizeof(MyClass)=" << sizeof(MyClass) << endl;
+
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是探究静态数据成员
+
+#include <iostream>
+
+using namespace std;
+class MyClass
+{
+public:
+    MyClass();
+    ~MyClass();
+    int i;
+    static int num;
+    // 可内可外
+    static void TextFun1()
+    {
+        // error 不可在静态成员函数中用成员数据。
+        // i = 0;
+        cout << "TextFun1()" << endl;
+    }
+    static void TextFun2();
+    void Text()
+    {
+        i = 0;
+    }
+};
+
+// 这是正确给初始值的方式，在类的外面。
+int MyClass::num = 0;
+
+// 静态成员函数定义
+void MyClass::TextFun2()
+{
+    // error 这也是不可
+    // this->i = 0;
+
+    // error 调用非静态成员函数也不可，是为了防止你绕弯子去动成员变量的值。
+    // Text();
+    cout << "TextFun2()" << endl;
+}
+
+int main()
+{
+    // 注意这是在对象创建之前就可以通过类名调用静态成员函数
+    // 这也可以解释为何在静态成员函数中不能存在类的成员变量，因为连对象都没创建出来。
+    MyClass::num = 0;
+    MyClass::TextFun1();
+    MyClass::TextFun2();
+
+    MyClass obj_1;
+    (&obj_1)->TextFun2();
 
     return 0;
 }
