@@ -750,7 +750,7 @@ int main()
 
 #endif
 
-#if 0
+#if 
 // 这是探究静态数据成员
 
 #include <iostream>
