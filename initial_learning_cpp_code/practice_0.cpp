@@ -750,7 +750,7 @@ int main()
 
 #endif
 
-#if 
+#if 0
 // 这是探究静态数据成员
 
 #include <iostream>
@@ -801,6 +801,66 @@ int main()
 
     MyClass obj_1;
     (&obj_1)->TextFun2();
+
+    return 0;
+}
+
+#endif
+
+#if 1
+// 这是单例模式
+#include <iostream>
+
+using namespace std;
+
+class SingleInstance
+{
+private:
+    SingleInstance();
+    SingleInstance(const SingleInstance &obj);
+    static SingleInstance *p_single_instance;
+
+public:
+    static SingleInstance *GetSingleInstance();
+    ~SingleInstance();
+    int num_;
+};
+SingleInstance *SingleInstance::p_single_instance = NULL;
+SingleInstance *SingleInstance::GetSingleInstance()
+{
+    if (p_single_instance == NULL)
+    {
+        p_single_instance = new SingleInstance;
+    }
+
+    return p_single_instance;
+}
+
+SingleInstance::SingleInstance()
+{
+    num_ = 0;
+}
+
+SingleInstance::~SingleInstance()
+{
+}
+
+int main(void)
+{
+    // 显示不可访问
+    // SingleInstance a;
+
+    // 输出三个地址都是一样的
+
+    SingleInstance *p_single_class_1 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_1 << endl;
+    cout << p_single_class_1->num_ << endl;
+    SingleInstance *p_single_class_2 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_2 << endl;
+    p_single_class_1->num_ = 15;
+    SingleInstance *p_single_class_3 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_3 << endl;
+    cout << p_single_class_1->num_ << endl;
 
     return 0;
 }
