@@ -807,7 +807,7 @@ int main()
 
 #endif
 
-#if 1
+#if 0
 // 这是单例模式
 #include <iostream>
 
@@ -862,6 +862,246 @@ int main(void)
     cout << hex << p_single_class_3 << endl;
     cout << p_single_class_1->num_ << endl;
 
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是探究常量数据成员的代码
+
+#include <iostream>
+
+using namespace std;
+
+class TextConstData
+{
+public:
+    TextConstData();
+    TextConstData(int v, int n = 0);
+    int num;
+    const int val=0;
+};
+
+TextConstData::TextConstData()
+{
+}
+TextConstData::TextConstData(int v, int n) : val(v), num(n)
+{
+}
+
+int main(void)
+{
+    TextConstData text_const_data;
+    cout << "text_const_data.num=" << text_const_data.num << ",text_const_data.val=" << text_const_data.val << endl;
+
+    text_const_data.num = 100;
+    cout << "text_const_data.num=" << text_const_data.num << ",text_const_data.val=" << text_const_data.val << endl;
+
+    return 0;
+}
+
+#endif
+
+#if 0
+// 这是探究常量成员函数以及常量对象的代码演示
+
+#include <iostream>
+
+using namespace std;
+
+class TextConst
+{
+private:
+    /* data */
+public:
+    int num;
+    const int val;
+    static int temp;
+
+public:
+    TextConst(int v);
+    ~TextConst();
+    void TextFun1();
+    void TextFun2() const;
+};
+int TextConst::temp = 888;
+
+TextConst::TextConst(int v) : val(v)
+{
+    num = 0;
+}
+TextConst::~TextConst()
+{
+}
+void TextConst::TextFun1()
+{
+    num = 999;
+    cout << "TextFun1.num=" << num << endl;
+    cout << "TextFun1.val=" << val << endl;
+    cout << "TextFun1.temp=" << temp << endl;
+
+}
+
+void TextConst::TextFun2() const
+{
+    // error 在常量函数中不可以进行修改内部成员变量的值
+    // num = 999;
+    // 当然输出这些都是没问题的
+    cout << "TextFun2.num=" << num << endl;
+    cout << "TextFun2.val=" << val << endl;
+    // 注意到，静态成员变量是可以进行修改的。
+    temp = 777;
+    cout << "TextFun2.temp=" << temp << endl;
+}
+
+int main(void)
+{
+    TextConst text_const_1(555);
+    text_const_1.TextFun1();
+    text_const_1.TextFun2();
+
+    const TextConst text_const_2(333);
+
+    // error 常对象不能修改值
+    // text_const_2.num = 0;
+
+    // 如同常函数一样可以对静态变量修改
+    text_const_2.temp = 0;
+
+    // error 常对象还需要注意的一点就是不能调用普通的成员函数为何？？
+    // 是因为如果调用成员函数你就可能间接的进行修改值，所以直接禁止使用普通成员函数。
+    // text_const_2.TextFun1();
+
+    // 调用常成员函数自然是没有问题，因为常函数本身就不能修改值自然就可以使用。
+    text_const_2.TextFun2();
+    return 0;
+}
+
+#endif
+
+#if 0
+
+#include <iostream>
+
+using namespace std;
+
+class TextFriend
+{
+private:
+    int num_;
+    // 位置可以在任何地方
+    friend TextFriend TextFriendFun1(TextFriend obj);
+
+public:
+    int val_;
+    TextFriend();
+};
+
+TextFriend TextFriendFun1(TextFriend obj)
+{
+    // error 注意这个地方由于num是属于私有的没有权限访问
+    //  obj.num_ = 0;
+
+    // 这个地方不加friend 也可以进行对公有变量的修改。
+    obj.val_ = 1;   ///<但是需要注意，传进去改值是可以但是传不出去
+
+    // 这里就是打破了封装可以修改里面的值
+    obj.num_ = 1;
+    cout << "TextFriend.num_=" << obj.num_ << endl;
+
+    return obj;
+}
+TextFriend::TextFriend()
+{
+}
+
+int main(void)
+{
+    TextFriend text_friend_1;
+    text_friend_1 = TextFriendFun1(text_friend_1);
+    cout << text_friend_1.val_ << endl;
+    return 0;
+}
+
+#endif
+#if 0
+// 这是对友元函数的学习代码
+
+#include <iostream>
+
+using namespace std;
+
+class TextFriendFun
+{
+private:
+    int num_;
+    
+    // 位置可以在任何地方
+    friend void TextFriendFunFun1(TextFriendFun& obj);
+
+public:
+    int val_;
+    TextFriendFun();
+};
+
+void TextFriendFunFun1(TextFriendFun& obj)
+{
+    // error 注意这个地方由于num是属于私有的没有权限访问
+    //  obj.num_ = 0;
+
+    // 这个地方不加friend 也可以进行对公有变量的修改。
+    obj.val_ = 1;   ///<但是需要注意，传进去改值,如果没加上&是传不出去的，里面改了外面没动。
+
+    // 这里就是打破了封装可以修改里面的值
+    obj.num_ = 1;
+    cout << "TextFriendFun.num_=" << obj.num_ << endl;
+
+}
+TextFriendFun::TextFriendFun()
+{
+    num_ = 0;
+}
+
+int main(void)
+{
+    TextFriendFun text_friend_1;
+    TextFriendFunFun1(text_friend_1);
+    cout << text_friend_1.val_ << endl;
+
+    return 0;
+}
+
+#endif
+
+#if 1
+// 这是探究友元类的演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class TextFriendClass1
+{
+private:
+    int num;
+
+public:
+    friend class TextFriendClass2;
+};
+
+class TextFriendClass2
+{
+public:
+    void TextFun(TextFriendClass1 &obj)
+    {
+        // 友元类，就打破了类的封装。
+        obj.num = 1;
+    }
+};
+
+int main(void)
+{
     return 0;
 }
 
