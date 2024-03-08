@@ -1074,7 +1074,7 @@ int main(void)
 
 #endif
 
-#if 1
+#if 0
 // 这是探究友元类的演示代码
 
 #include <iostream>
