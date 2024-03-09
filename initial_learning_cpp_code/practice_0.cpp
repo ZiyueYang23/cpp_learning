@@ -1106,3 +1106,158 @@ int main(void)
 }
 
 #endif
+
+#if 0
+// 这是探究继承与派生的代码
+
+#include <iostream>
+
+using namespace std;
+
+class ClassFather
+{
+private:
+    int pri_;
+
+public:
+    int pub_;
+    ClassFather(ClassFather &obj);
+    ClassFather();
+
+protected:
+};
+
+class ClassSon : public ClassFather
+{
+private:
+public:
+    int num_;
+    ClassSon();
+    ClassSon(ClassSon &obj);
+
+protected:
+};
+
+int main(void)
+{
+    ClassFather class_father_1;
+    ClassSon class_son_1;
+
+    cout << "sizeof(class_father_1)=" << sizeof(class_father_1) << endl;
+    cout << "sizeof(class_son_1)=" << sizeof(class_son_1) << endl;
+    // 输出结果：
+    // sizeof(class_father_1)=8，父类中两个int型变量，占用八个字节。
+    // sizeof(class_son_1)=12，子类中只有一个int型变量却占用了十二个字节。由此可见，子类继承了父类的所有数据，尽管有些数据不能访问
+
+    // 可以访问父类的public
+    class_son_1.pub_ = 1;
+    // 此时显示的是class_father_1.pub_=0;也就是子类继承有了新的数据
+    cout << "class_father_1.pub_=" << class_father_1.pub_ << endl;
+
+    return 0;
+}
+
+
+// ClassFather
+
+ClassFather::ClassFather()
+{
+
+}
+ClassFather::ClassFather(ClassFather &obj)
+{
+    cout << "拷贝构造函数" << endl;
+}
+
+// ClassSon
+
+ClassSon::ClassSon()
+{
+    num_ = 0;
+    // 在认爸爸之后就可以使用爸爸里面的数据，注意权限
+    pub_ = 0;
+    // error 不可访问，但是否存在？可以通过sizeof来检测一下
+    // pri_ = 0;
+}
+
+ClassSon::ClassSon(ClassSon &obj)
+{
+    cout << "拷贝构造函数" << endl;
+}
+
+#endif
+
+#if 0
+// 这是探究父子类成员重名时的优先级的演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class ClassFather1
+{
+public:
+    ClassFather1(/* args */);
+    int num_;
+};
+
+class ClassFather2
+{
+public:
+    ClassFather2(/* args */);
+    int num_;
+};
+
+class ClassSon : public ClassFather1, public ClassFather2
+{
+public:
+    ClassSon(/* args */);
+    int num_;
+};
+
+int main(void)
+{
+    ClassSon class_son;
+    // 输出结果是class_son.num_=99，也就是说优先的为子类的成员
+    cout << "class_son.num_=" << class_son.num_ << endl;
+    // class_son.ClassFather1::num_=1
+    cout << "class_son.ClassFather1::num_=" << class_son.ClassFather1::num_ << endl;
+    // class_son.ClassFather2::num_=2
+    cout << "class_son.ClassFather2::num_=" << class_son.ClassFather2::num_ << endl;
+
+    return 0;
+}
+
+// ClassFather1
+ClassFather1::ClassFather1(/* args */)
+{
+    num_ = 1;
+}
+
+// ClassFather2
+ClassFather2::ClassFather2(/* args */)
+{
+    num_ = 2;
+}
+
+// ClassSon
+ClassSon::ClassSon(/* args */)
+{
+    num_ = 99;
+}
+
+#endif
+
+
+#if 1
+
+#include <iostream>
+
+using namespace std;
+
+int main(void)
+{
+    return 0;
+}
+
+#endif
