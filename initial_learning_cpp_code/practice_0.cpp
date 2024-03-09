@@ -1248,16 +1248,261 @@ ClassSon::ClassSon(/* args */)
 
 #endif
 
-
-#if 1
+#if 0
+// 这是研究父类与子类创建的过程的代码示例
 
 #include <iostream>
 
 using namespace std;
 
+class ClassFather1
+{
+public:
+    int val_;
+    ClassFather1();
+    ~ClassFather1();
+};
+
+class ClassSon1 : public ClassFather1
+{
+public:
+    int num_;
+    ClassSon1();
+    ~ClassSon1();
+};
+
 int main(void)
 {
-    return 0;
+    // 此处并没有定义父类对象
+    ClassSon1 class_song_1;
+    // 而且也没有使用父类成员变量
+    cout << class_song_1.num_ << endl;
+    // 结果是完成父类的构造。
+}
+
+// ClassFather
+ClassFather1::ClassFather1()
+{
+    val_ = 1;
+    cout << "父类构造" << endl;
+}
+ClassFather1::~ClassFather1()
+{
+    cout << "父类析构" << endl;
+}
+
+// ClassSon1
+ClassSon1::ClassSon1()
+{
+    num_ = 2;
+    cout << "子类构造" << endl;
+
+}
+ClassSon1 ::~ClassSon1()
+{
+    cout << "子类析构" << endl;
+}
+
+/* 
+输出结果:
+
+父类构造  
+子类构造
+2
+子类析构
+父类析构
+*/
+
+#endif
+
+#if 0
+// 这是探究子类对象如何对父类中继承的const变量进行初始化的演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class ClassFather2
+{
+public:
+    int val_;
+    ClassFather2(int n);
+    ClassFather2();
+    ~ClassFather2();
+    const int kNum_;
+};
+
+class ClassSon2 : public ClassFather2
+{
+public:
+    int num_;
+    ClassSon2(int n);
+    ClassSon2();
+    ~ClassSon2();
+};
+
+int main(void)
+{
+    ClassSon2 class_son_2;
+    cout << "class_son_2.val_=" << class_son_2.val_ << endl
+         << "class_son_2.num_=" << class_son_2.num_ << endl
+         << "class_son_2.kNum_=" << class_son_2.kNum_ << endl;
+}
+
+// ClassFather2
+ClassFather2::ClassFather2(int n) : kNum_(n)
+{
+
+    val_ = 1;
+    cout << "父类有参构造" << endl;
+}
+ClassFather2 ::ClassFather2() : kNum_(9)
+{
+    cout << "父类构造" << endl;
+}
+ClassFather2::~ClassFather2()
+{
+    cout << "父类析构" << endl;
+}
+
+// ClassSon2
+// 直接调用父类构造函数，语法就是: 父类构造函数名（）
+ClassSon2::ClassSon2(int n) : ClassFather2(n)
+{
+    num_ = 2;
+    val_ = 3;
+    // error 那么改如何完成子类继承的const常量的初始化呢？
+    cout << "子类有参构造" << endl;
+}
+ClassSon2 ::ClassSon2()
+{
+    cout << "子类构造" << endl;
+}
+ClassSon2 ::~ClassSon2()
+{
+    cout << "子类析构" << endl;
+}
+
+// ClassSon2 ::ClassSon2() : ClassFather2(7)
+// {
+//     cout << "子类构造" << endl;
+// }
+#endif
+
+#if 0
+// 这是研究菱形继承演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class GrandClass
+{
+public:
+    int grand_num_ = 9;
+};
+class FatherClass1 : public GrandClass
+{
+public:
+    int father_1_num_;
+};
+class FatherClass2 : public GrandClass
+{
+public:
+    int father_2_num_;
+};
+class SonClass2 : public FatherClass1, public FatherClass2
+{
+public:
+    int son_num_;
+};
+
+int main(void)
+{
+    SonClass2 son_class_0;
+    son_class_0.son_num_;
+    son_class_0.father_1_num_;
+    son_class_0.father_2_num_;
+    // error 不知道放到那一块内存。
+    // son_class_0.grand_num_;
+
+    // 输出结果都是9，也就说明他们是重复的造成了内存的浪费。
+    cout << "son_class_0.FatherClass1::grand_num_=" << son_class_0.FatherClass1::grand_num_ << endl;
+    cout << "son_class_0.FatherClass2::grand_num_=" << son_class_0.FatherClass2::grand_num_ << endl;
+
+
+    cout << "sizeof(GrandClass)=" << sizeof(GrandClass) << endl;
+    cout << "sizeof(FatherClass1)=" << sizeof(FatherClass1) << endl;
+    cout << "sizeof(FatherClass2)=" << sizeof(FatherClass2) << endl;
+    cout << "sizeof(SonClass2)=" << sizeof(SonClass2) << endl;
+
+    /*
+    print
+
+    sizeof(GrandClass)=4
+    sizeof(FatherClass1)=8
+    sizeof(FatherClass2)=8
+    sizeof(SonClass2)=20      ///<8+8+4=20,这里浪费了4个字节因为其根本上都是grand_num_
+    */
+}
+
+#endif
+
+#if 1
+// 这是研究菱形继承中虚继承的演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class GrandClass
+{
+public:
+    int grand_num_ = 9;
+};
+class FatherClass1 : virtual public GrandClass
+{
+public:
+    int father_1_num_;
+};
+class FatherClass2 : virtual public GrandClass
+{
+public:
+    int father_2_num_;
+};
+class SonClass2 : public FatherClass1, public FatherClass2
+{
+public:
+    int son_num_;
+};
+
+int main(void)
+{
+    SonClass2 son_class_0;
+    son_class_0.son_num_;
+    // son_class_0.father_1_num_;
+    // son_class_0.father_2_num_;
+    // right 用来虚继承就可以使用了
+    son_class_0.grand_num_;
+
+    // 输出结果都是9，也就说明他们是重复的造成了内存的浪费。
+    cout << "son_class_0.FatherClass1::grand_num_=" << son_class_0.FatherClass1::grand_num_ << endl;
+    cout << "son_class_0.FatherClass2::grand_num_=" << son_class_0.FatherClass2::grand_num_ << endl;
+
+
+    cout << "sizeof(GrandClass)=" << sizeof(GrandClass) << endl;
+    cout << "sizeof(FatherClass1)=" << sizeof(FatherClass1) << endl;
+    cout << "sizeof(FatherClass2)=" << sizeof(FatherClass2) << endl;
+    cout << "sizeof(SonClass2)=" << sizeof(SonClass2) << endl;
+
+    /*
+    print
+
+    sizeof(GrandClass)=4
+    sizeof(FatherClass1)=16
+    sizeof(FatherClass2)=16 ///<原来是8字节现在变成了16字节？？why？
+    sizeof(SonClass2)=40    ///<16+16+4+4???这里是怎么算的不太清楚
+    */
 }
 
 #endif
