@@ -1448,7 +1448,7 @@ int main(void)
 
 #endif
 
-#if 1
+#if 0
 // 这是研究菱形继承中虚继承的演示代码
 
 #include <iostream>
@@ -1505,4 +1505,134 @@ int main(void)
     */
 }
 
+#endif
+#if 0
+// 这是实现多态的演示代码
+
+#include <iostream>
+using namespace std;
+
+class FatherClass3
+{
+public:
+    virtual void TextFunction3();
+};
+
+class SonClass3 : public FatherClass3
+{
+public:
+    void TextFunction3();
+};
+class SonClass4 : public FatherClass3
+{
+public:
+    void TextFunction3();
+};
+
+int main(void)
+{
+    FatherClass3 father_class_3;
+
+    SonClass3 son_class_3;
+
+    SonClass4 son_class_4;
+
+    FatherClass3 *p_father_class_3;
+    
+    p_father_class_3 = &father_class_3;
+    p_father_class_3->TextFunction3();
+
+    p_father_class_3 = &son_class_3;
+    p_father_class_3->TextFunction3();
+
+    p_father_class_3 = &son_class_4;
+    p_father_class_3->TextFunction3();
+    return 0;
+}
+
+// FatherClass3
+void FatherClass3::TextFunction3()
+{
+    cout << "FatherClass3.TextFunction3()" << endl;
+}
+
+// SonClass3
+void SonClass3::TextFunction3()
+{
+    cout << "SonClass3.TextFunction3()" << endl;
+}
+// SonClass4
+void SonClass4::TextFunction3()
+{
+    cout << "SonClass4.TextFunction3()" << endl;
+}
+
+/*
+输出结果
+
+加上virtual:
+
+FatherClass3.TextFunction3()
+SonClass3.TextFunction3()
+SonClass4.TextFunction3()
+
+如果什么都不变就只去掉virtual:
+FatherClass3.TextFunction3()
+FatherClass3.TextFunction3()
+FatherClass3.TextFunction3()
+*/
+
+#endif
+
+#if 1
+
+#include <iostream>
+
+using namespace std;
+
+// 抽象类
+class FatherClass4
+{
+public:
+    virtual void TextFunc4() = 0;
+};
+
+class SonClass4 : public FatherClass4
+{
+public:
+    void TextFunc4() final;
+};
+
+class GrandsonClass : public SonClass4
+{
+public:
+    // error 这里就final了TextFunc4的虚函数继承，不能够再重写了
+    // void TextFunc4();
+};
+
+int main(void)
+{
+    // error 此时父类已经是抽象类了，不能够再实例化对象
+    // FatherClass4 a;
+
+    SonClass4 son_class_4;
+    son_class_4.TextFunc4();
+
+    return 0;
+}
+
+// FatherClass4
+
+// 纯虚函数
+// void FatherClass4::TextFunc4()
+// {
+//     cout << "FatherClass4::TextFunc4()" << endl;
+// }
+
+// SonClass4
+
+void SonClass4::TextFunc4()
+{
+    cout << "SonClass4::TextFunc4()" << endl;
+}
 #endif
