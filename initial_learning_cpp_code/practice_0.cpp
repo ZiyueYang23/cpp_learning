@@ -1584,7 +1584,7 @@ FatherClass3.TextFunction3()
 
 #endif
 
-#if 1
+#if 0
 
 #include <iostream>
 
@@ -1634,5 +1634,183 @@ int main(void)
 void SonClass4::TextFunc4()
 {
     cout << "SonClass4::TextFunc4()" << endl;
+}
+#endif
+
+#if 0
+// 这是以复数类为例子研究运算符重载
+
+#include <iostream>
+using namespace std;
+
+
+class MyComplex1
+{
+private:
+    /* data */
+    double real_;
+    double imag_;
+
+public:
+    MyComplex1(double real = 0.0, double imag = 0.0);
+    ~MyComplex1();
+
+    void DisplayComplex() const;
+
+    // // 初级版本-is loser
+    // MyComplex1 operator+(MyComplex1 &obj);
+
+    // 相对满足代码健壮性的版本
+    MyComplex1 operator+(const MyComplex1 &obj) const;
+
+    // 为何此处的返回值不能够是 MyComplex1 & ???
+    MyComplex1 operator-(const MyComplex1 &obj) const;
+
+    // 这里使用友元函数来使得在全局函数中也可以去访问到private数据。
+    friend MyComplex1 operator*(const MyComplex1 &obj_1, const MyComplex1 &obj_2);
+};
+
+// 全局函数声明
+MyComplex1 operator*(const MyComplex1 &obj_1, const MyComplex1 &obj_2);
+
+int main(void)
+{
+    MyComplex1 my_complex_obj_1(-3, 5);
+    my_complex_obj_1.DisplayComplex();
+
+    MyComplex1 my_complex_obj_2(4, -3);
+    my_complex_obj_2.DisplayComplex();
+
+    // 现在我想实现两个复数相加
+    // error 没有这种加法运算符重载
+    MyComplex1 my_complex_obj_3;
+    my_complex_obj_3 = my_complex_obj_1 + my_complex_obj_2;
+    my_complex_obj_3.DisplayComplex();
+    my_complex_obj_3 = my_complex_obj_1.operator-(my_complex_obj_2);
+    my_complex_obj_3.DisplayComplex();
+    my_complex_obj_3 = operator*(my_complex_obj_1, my_complex_obj_2);
+    my_complex_obj_3.DisplayComplex();
+    my_complex_obj_3 = my_complex_obj_1 * my_complex_obj_2;
+    my_complex_obj_3.DisplayComplex();
+
+    // 注意到 = 这个运算符，直接就可以完成两个对象相等
+    // 其实这是我们吃到的一个新的低保，叫赋值函数。
+    // 现在类中存在四个低保，构造析构拷贝构造以及赋值函数。
+    return 0;
+}
+
+// 完成全局函数定义
+MyComplex1 operator*(const MyComplex1 &obj_1, const MyComplex1 &obj_2)
+{
+    return MyComplex1((obj_1.real_ * obj_2.real_) - (obj_1.imag_ * obj_2.imag_), (obj_1.real_ * obj_2.imag_) + (obj_1.imag_ * obj_2.real_));
+}
+
+// MyComplex1
+MyComplex1::MyComplex1(double real, double imag)
+    : real_(real), imag_(imag)
+{
+}
+
+MyComplex1::~MyComplex1()
+{
+}
+
+// // 初级版本-loser版本
+// MyComplex1 MyComplex1::operator+(MyComplex1 &obj)
+// {
+//     MyComplex1 obj_temp;
+
+//     obj_temp.real_ = this->real_ + obj.real_;
+//     obj_temp.imag_ = this->imag_ + obj.imag_;
+
+//     return obj_temp;
+// }
+
+// 相对满足代码健壮性的版本
+MyComplex1 MyComplex1::operator+(const MyComplex1 &obj) const
+{
+    // 直接用一个构造函数非常巧妙。
+    return MyComplex1(this->real_ + obj.real_, this->imag_ + obj.imag_);
+}
+
+MyComplex1 MyComplex1::operator-(const MyComplex1 &obj) const
+{
+    return MyComplex1(this->real_ - obj.real_, this->imag_ - obj.imag_);
+}
+
+void MyComplex1::DisplayComplex() const
+{
+    cout << real_ << "+"
+         << "(" << imag_ << ")"
+         << "i" << endl;
+}
+
+#endif
+
+#if 1
+// 这是探究<< , >>运算符重载的代码演示
+
+#include <iostream>
+using namespace std;
+
+class MyComplex2
+{
+private:
+    double real_;
+    double imag_;
+
+public:
+    MyComplex2(double real = 0.0, double imag = 0.0);
+
+    // 友元函数，访问私有数据
+    friend ostream &operator<<(ostream &out, MyComplex2 &obj);
+    friend istream &operator>>(istream &in, MyComplex2 &obj);
+};
+
+// 全局函数<<,>>运算符重载声明
+ostream &operator<<(ostream &out, MyComplex2 &obj);
+istream &operator>>(istream &in, MyComplex2 &obj);
+
+int main(void)
+{
+    MyComplex2 my_complex_2_0(3, 6);
+    MyComplex2 my_complex_2_1(-1, 3);
+
+    // error 这个地方我想实现直接打印出两个虚数，可是<<,>>这两个运算符并不认识类，需要重载
+    // cout << my_complex_2_0 << my_complex_2_1 << endl;
+
+    // 通过运算符重载可以实现想要达成的目的。
+    cin >> my_complex_2_0 >> my_complex_2_1;
+    cout << my_complex_2_0 << endl
+         << my_complex_2_1 << endl;
+
+    // 实际上是这样的,把cin >> my_complex_2_0运算完之后返回值为cin，继续调用重载函数，一个传进去cin，第二个再是my_complex_2_1
+    operator>>((operator>>(cin, my_complex_2_0)), my_complex_2_1);
+    // 有一点小瑕疵没法连在一起完成换行
+    operator<<(cout, my_complex_2_0);
+    cout << endl;
+    operator<<(cout, my_complex_2_1);
+
+    return 0;
+}
+
+// MyComplex2
+MyComplex2::MyComplex2(double real, double imag)
+    : real_(real), imag_(imag)
+{
+}
+
+// >>,<<重载函数定义
+ostream &operator<<(ostream &out, MyComplex2 &obj)
+{
+    out << obj.real_ << "+"
+        << "(" << obj.imag_ << ")"
+        << "i";
+    return out;
+}
+istream &operator>>(istream &in, MyComplex2 &obj)
+{
+    in >> obj.real_ >> obj.imag_;
+    return in;
 }
 #endif
