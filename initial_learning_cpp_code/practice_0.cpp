@@ -1747,7 +1747,7 @@ void MyComplex1::DisplayComplex() const
 
 #endif
 
-#if 1
+#if 0
 // 这是探究<< , >>运算符重载的代码演示
 
 #include <iostream>
@@ -1813,4 +1813,59 @@ istream &operator>>(istream &in, MyComplex2 &obj)
     in >> obj.real_ >> obj.imag_;
     return in;
 }
+#endif
+
+#if 1
+
+#include <iostream>
+
+using namespace std;
+
+class RMB
+{
+private:
+    int Yuan_;
+    int Jiao_;
+    int Fen_;
+
+public:
+    RMB(int Yuan = 0, int Jiao = 0, int Fen = 0);
+    ~RMB();
+
+    operator double()
+    {
+        return (double)(Yuan_ + ((double)Jiao_ / 10) + ((double)Fen_ / 100));
+    };
+    void ShowRmb();
+};
+
+void RMB::ShowRmb()
+{
+    cout << this->Yuan_ << "元" << this->Jiao_ << "角" << this->Fen_ << "分" << endl;
+}
+
+RMB::RMB(int Yuan, int Jiao, int Fen)
+    : Yuan_(Yuan), Jiao_(Jiao), Fen_(Fen)
+{
+}
+
+RMB::~RMB()
+{
+}
+
+int main(void)
+{
+    RMB rmb_0(5, 3, 6);
+    RMB rmb_1(1);
+    rmb_1.ShowRmb();
+    rmb_0.ShowRmb();
+
+    double temp;
+    temp = rmb_0;
+
+    cout << temp << endl;
+
+    return 0;
+}
+
 #endif
