@@ -1815,7 +1815,7 @@ istream &operator>>(istream &in, MyComplex2 &obj)
 }
 #endif
 
-#if 1
+#if 0
 
 #include <iostream>
 
@@ -1865,6 +1865,125 @@ int main(void)
 
     cout << temp << endl;
 
+    return 0;
+}
+
+#endif
+
+#if 1
+// 这是研究函数模板与类模板的演示代码（还需勤加练习）
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+// template <class ClassType_1, class ClassType_2>
+template <class ClassType_1 = int, class ClassType_2 = double>
+class TextTypeClass
+{
+public:
+    ClassType_1 var_1_;
+    ClassType_2 var_2_;
+
+    TextTypeClass(ClassType_1 var_1 = 0, ClassType_2 var_2 = 0.0)
+        : var_1_(var_1), var_2_(var_2) {}
+    void ShowData()
+    {
+        cout << "var_1=" << var_1_ << endl
+             << "var_2=" << var_2_ << endl;
+    }
+};
+
+template <class FatherTypeClass1, class FatherTypeClass2>
+class FatherTypeClass
+{
+public:
+    FatherTypeClass1 var_1_;
+    FatherTypeClass2 var_2_;
+};
+
+// 普通做法
+class SonClass : public FatherTypeClass<int, double>
+{
+public:
+    int val_;
+};
+// 从这里开始顿悟，其实这玩意根据你想的加在函数or类前面，来充当临时类型，你再传参过去，有点temp的意思。
+template <class SonTypeClass1, class SonTypeClass2>
+class TypeSonClass : public FatherTypeClass<SonTypeClass1, SonTypeClass1>
+{
+public:
+    SonTypeClass2 val_;
+};
+
+template <typename Type>
+Type Add(Type num_1, Type num_2)
+{
+    return num_1 + num_2;
+}
+
+template <typename Type_1, typename Type_2>
+void PrintText(Type_1 t_1, Type_2 t_2)
+{
+    cout << "t_1=" << t_1 << endl
+         << "t_2=" << t_2 << endl;
+}
+
+void TextFunPrint_1(TextTypeClass<int, double> &obj)
+{
+    obj.ShowData();
+}
+
+template <typename FunType_1, typename FunType_2>
+void TextFunPrint_2(TextTypeClass<FunType_1, FunType_2> &obj)
+{
+    obj.ShowData();
+}
+
+template <class ClassType>
+void TextFunPrint_3(ClassType &obj)
+{
+    obj.ShowData();
+}
+
+int main(void)
+{
+    cout << Add(3, 4) << endl
+         << Add<int>(3.2, 4) << endl
+         << Add<double>(3.2, 4.3) << endl
+         << Add(3.1, 4.1) << endl
+         << Add<char>(67, 1) << endl;
+
+    // error 我想弄一个运算符重载但是不知为何行不通，需要类。
+    // cout << Add("Hello", ",cpp!") << endl;
+
+    PrintText(1, 1);
+    // PrintText<int, int>(1, 1);
+    PrintText(1, 1.1);
+    // PrintText<int, double>(1, 1.1);
+    PrintText("Hello", "World!");
+    PrintText<const char *, char>("Hello", 67);
+
+    // error double,int 两种不同类型的变量传进去，会出现二义性
+    // cout << Add(3.2, 4) << endl;
+
+    TextTypeClass<> obj_1(3.2, 2.2);
+    TextFunPrint_1(obj_1);
+
+    TextTypeClass<char> obj_2(65, 2.2);
+    TextFunPrint_2(obj_2);
+    // 默认会给，隐式推导类型
+    // TextFunPrint_2<char,double>(obj_2);
+    // error
+    // TextFunPrint_1(obj_2);
+
+    TextTypeClass<char, float> obj_3(67, 2.2f);
+    TextFunPrint_3(obj_3);
+    // 实际上应该是这样的，隐式推导回帮助给出ClassType
+    TextFunPrint_3<TextTypeClass<char, float>>(obj_3);
+
+    TypeSonClass<int,double> obj_4;
+    obj_4.var_1_ = 0;
     return 0;
 }
 
