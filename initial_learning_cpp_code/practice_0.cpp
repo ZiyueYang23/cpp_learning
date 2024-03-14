@@ -1870,7 +1870,7 @@ int main(void)
 
 #endif
 
-#if 1
+#if 0
 // 这是研究函数模板与类模板的演示代码（还需勤加练习）
 
 #include <iostream>
@@ -1987,4 +1987,55 @@ int main(void)
     return 0;
 }
 
+#endif
+
+#if 1
+//这是探究try throw catch的演示代码
+
+#include <iostream>
+using namespace std;
+
+double Div(double num_1, double num_2)
+{
+    if (num_2 == 0.0)
+    {
+        // 抛出异常信息
+        // 注意到当把double类型的报错信息抛出，接收那里没有具体的double类型，因此调用兜底的catch函数输出“输出这里有问题！”
+        throw 3.14;
+        throw "Error";
+        // 并且需要注意当第一条抛出了异常信息之后其后面的语句就不会再执行。
+        throw 666;
+        throw 'S';
+        // 并且后面可以跟多种类型
+    }
+    return num_1 / num_2;
+}
+
+int main(void)
+{
+    try
+    {
+        // 把你需要检测的代码放进try里面，然后其中要有throw抛出异常，并且需要catch接收
+        cout << Div(9, 0) << endl;
+    }
+    // catch(const std::exception& e)
+    // {
+    //     std::cerr << e.what() << '\n';
+    // }
+    catch (const char *str)
+    {
+        cout << str << endl;
+    }
+    catch (const int str)
+    {
+        cout << str << endl;
+    }
+    // 可以给三个点，大概就是临时模板变量的感觉，兜底的,就不需要来具体接收何种类型的异常信息。
+    catch (...)
+    {
+        cout << "这里有问题！" << endl;
+    }
+
+    return 0;
+}
 #endif
