@@ -1989,7 +1989,7 @@ int main(void)
 
 #endif
 
-#if 1
+#if 0
 //这是探究try throw catch的演示代码
 
 #include <iostream>
@@ -2035,6 +2035,63 @@ int main(void)
     {
         cout << "这里有问题！" << endl;
     }
+
+    return 0;
+}
+#endif
+
+#if 1
+#include <iostream>
+using namespace std;
+
+class Point
+{
+private:
+    /* data */
+    int point_x_;
+    int point_y_;
+
+public:
+    Point(int x = 0, int y = 0);
+    ~Point();
+    Point(const Point &obj);
+    Point MakePoint(int x, int y);
+};
+
+Point::Point(const Point &obj)
+{
+    cout << "拷贝构造函数" << endl;
+
+    this->point_x_ = obj.point_x_;
+    this->point_y_ = obj.point_y_;
+}
+Point::Point(int x, int y)
+    : point_x_(x), point_y_(y)
+{
+    cout << "默认构造函数" << endl;
+}
+
+Point::~Point()
+{
+    cout << "析构函数" << endl;
+}
+
+Point Point::MakePoint(int x, int y)
+{
+    cout << "MakePoint()" << endl;
+    Point temp(x, y);
+
+    return temp;
+}
+
+
+int main(void)
+{
+    Point point_0(3,4);
+    Point point_1(point_0);
+    Point point_2;
+    
+    point_2 = point_2.MakePoint(6, 7);
 
     return 0;
 }
