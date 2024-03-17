@@ -2040,7 +2040,7 @@ int main(void)
 }
 #endif
 
-#if 1
+#if 0
 #include <iostream>
 using namespace std;
 
@@ -2095,4 +2095,43 @@ int main(void)
 
     return 0;
 }
+#endif
+
+#if 0
+#include <iostream>
+
+int main(void)
+{
+    int num(6);
+    void *ptr_1 = &num;
+    std::cout << *(int *)ptr_1 << std::endl;
+
+    int val(0);
+    // 修饰类型的const是禁止改值
+    const int *ptr_2 = &num;
+    *ptr_2 = 2;     ///< error
+    ptr_2 = &val;
+
+    // 由此可见int const * or const int *并无区别
+    // 而且更便于理解为何*是应该靠近变量名而不是类型名
+    int const *ptr_3 = &num;
+    *ptr_3 = 3;     ///< error
+    ptr_3 = &val;
+
+    // 修饰变量名的类型是禁止改指向，必须是它
+    int *const ptr_4 = &num;
+    *ptr_4 = 4;
+    ptr_4 = &val;    ///< error
+
+    // 这种就是既不能改值又不能改指向
+    const int *const ptr_0 = &num;
+    *ptr_0 = 0;      ///< error
+    ptr_0 = nullptr; ///< error
+
+    // 奇葩
+    const int const *const ptr_5 = &num;
+    *ptr_5 = 5;      ///< error
+    ptr_5 = nullptr; ///< error
+}
+
 #endif
