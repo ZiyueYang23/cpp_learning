@@ -1,4 +1,4 @@
-#if 0
+#if 1
 // 这是研究vector容器的演示代码
 
 #include <iostream>
