@@ -1081,3 +1081,100 @@
 
 //     return 0;
 // }
+
+// //@ 两两翻转链表
+
+// // 动指针一定是先插眼到对岸然后断桥，从后往前动指针，多插几个眼也就是指针不动指针，只动next即可
+// #include <iostream>
+
+// // 链表节点
+// struct LinkedNode
+// {
+//     int val;
+//     LinkedNode *next;
+
+//     // 默认结构体构造函数
+//     LinkedNode(int v = 0)
+//         : val(v), next(nullptr) {}
+// };
+
+// class LinkedList
+// {
+// public:
+//     // 实现链表节点的两两翻转
+//     LinkedNode *ChangeLinkedList(LinkedNode *p_head);
+// };
+
+// LinkedNode *LinkedList::ChangeLinkedList(LinkedNode *p_head)
+// {
+//     // 创建虚拟头节点
+//     LinkedNode *p_dummy_head = new LinkedNode(0);
+//     // cur指向虚拟头节点
+//     LinkedNode *p_cur = p_dummy_head;
+//     // 虚拟头节点接入链表头部
+//     p_dummy_head->next = p_head;
+
+//     // 当cur指向倒数第二个节点，temp_0指向最后一个节点，temp_1指向nullptr循环结束此时
+//     // 注意理解,上述情况是链表为奇数的时候,因为加了虚拟头节点,此时链表变为偶数.
+//     // 就拿3来举例,此时一个有四个节点,第一次交换会换第二个节点和第三个节点(算上虚拟头节点),然后cur会移动到第三个节点的位置此时就会停止循环.第三个节点就是原链表的第二个节点此时原链表的第一二节点都已完成了交换即可停止循环.
+
+//     // 同理可以理解偶数时,拿4来举例此时,加上虚拟头节点就是5个从指向第一个节点开始换2,3也就是原1,2,然后cur再移动到第三个节点处,此时还有3,4,5因此不会停止循环,进入循环换4,5,也就是原来的3,4.好,此时cur到了第五个节点,此时就满足第一个循环截止的条件,此时也就结束循环,而且原链表的1,2,3,4也都分别完成了交换.
+//     while (p_cur->next != nullptr && p_cur->next->next != nullptr)
+//     {
+//         // 创建temp0,指向cur的下一块
+//         LinkedNode *p_temp_0 = p_cur->next;
+//         // 创建temp1,指向cur的下下下一块,cur是1,temp0是2,temp1是4.
+//         // 这个挺关键的就是插个眼,把后续的地址接上
+//         LinkedNode *p_temp_1 = p_cur->next->next->next;
+//         // 关键就是如何理解交换时的步骤
+//         // 首先先完成最难的一步就是把第三块地址给第一块next,让第一块指向第三块
+//         p_cur->next = p_temp_0->next;
+//         // 第二步把第三块的next存上第二块的地址,让第三块指向第二块
+//         p_cur->next->next = p_temp_0;
+//         // 最后将第二块的next存上第四块的地址,让第二块指向第四块
+//         p_temp_0->next = p_temp_1;
+//         // 此上把进入循环的时候,cur所指的为第一块,temp0所指的为第二块,temp1所指的为第四块.
+
+//         p_cur = p_cur->next->next;
+//     }
+//     // 创建一个新的头指针承接链表交换后的真正头指针,便于去释放那块虚拟头节点
+//     LinkedNode *p_new_head = p_dummy_head->next;
+//     delete p_dummy_head;
+//     return p_new_head;
+// }
+
+// int main()
+// {
+//     // 创建一个简单的链表进行测试
+//     LinkedNode *head = new LinkedNode(1);
+//     head->next = new LinkedNode(2);
+//     head->next->next = new LinkedNode(3);
+//     head->next->next->next = new LinkedNode(4);
+
+//     // 打印原始链表
+//     LinkedNode *cur = head;
+//     std::cout << "Original Linked List: ";
+//     while (cur != nullptr)
+//     {
+//         std::cout << cur->val << " ";
+//         cur = cur->next;
+//     }
+//     std::cout << std::endl;
+
+//     // 调用链表翻转函数
+//     LinkedList linkedList;
+//     LinkedNode *new_head = linkedList.ChangeLinkedList(head);
+
+//     // 打印翻转后的链表
+//     std::cout << "Reversed Linked List: ";
+//     cur = new_head;
+
+//     while (cur != nullptr)
+//     {
+//         std::cout << cur->val << " ";
+//         cur = cur->next;
+//     }
+//     std::cout << std::endl;
+
+//     return 0;
+// }
