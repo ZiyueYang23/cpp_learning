@@ -676,7 +676,7 @@
 // }
 // // 纯自己独立实现的，相当不错！
 
-// //@ 螺旋矩阵
+// //@ 移除元素
 
 // #include <iostream>
 // #include <cassert>
@@ -1178,3 +1178,933 @@
 
 //     return 0;
 // }
+// //@ 删除倒数第n个元素
+// #include <iostream>
+
+// // 链表节点
+// struct LinkedNode
+// {
+//     int val;
+//     LinkedNode *next;
+
+//     // 默认结构体构造函数
+//     LinkedNode(int v = 0)
+//         : val(v), next(nullptr) {}
+// };
+
+// class LinkedList
+// {
+// public:
+//     // 实现删除链表倒数第n个节点
+//     LinkedNode *DeleteLinkedList(LinkedNode *p_head,int n);
+// };
+
+// LinkedNode *LinkedList::DeleteLinkedList(LinkedNode *p_head,int n)
+// {
+//     // 虚拟头节点
+//     LinkedNode *p_dummy_head = new LinkedNode(0);
+//     // 连上原链表
+//     p_dummy_head->next = p_head;
+
+//     LinkedNode *p_cur = p_dummy_head;
+//     // 计数器记录链表长度
+//     int count(1);
+
+//     // 遍历链表记录长度
+//     while (p_cur->next!=nullptr)
+//     {
+//         p_cur = p_cur->next;
+//         count++;
+//     }
+//     // 把cur倒拨回虚拟头节点
+//     p_cur = p_dummy_head;
+
+//     // 循环到要删除的头一个节点
+//     while((count-n-1)>0)
+//     {
+//         count--;
+//         p_cur = p_cur->next;
+//     }
+//     // 创建临时指针指向要删除的节点，目的就是为了断开链表后这个节点可以被释放
+//     LinkedNode *p_temp = p_cur->next;
+
+//     // 为了防止极端情况直接传空链表进来，此时temp指向nullptr，它是没有next的就会出问题。
+//     // 考虑问题需要全面
+//     if(p_cur->next!=nullptr)
+//     {
+//         p_cur->next = p_temp->next;
+//         p_temp->next = nullptr;
+//         delete p_temp;
+//     }
+//     // 释放虚拟头节点
+//     LinkedNode *p_tmp = p_dummy_head->next;
+//     p_dummy_head->next = nullptr;
+//     delete p_dummy_head;
+//     // 返回头节点
+//     return p_tmp;
+// }
+
+// #include <iostream>
+// // 用stack需要包含头文件，并且需要std::
+// #include <stack>
+// // 用list底层容器
+// #include <list>
+// int main(void)
+// {
+//     // 底层容器list
+//     std::list<int> a{0, 1, 2, 3, 4, 5};
+//     // 用底层容器完成对栈完成初始化
+//     std::stack<int, std::list<int>> my_stack_0(a);
+//     // 也可以用栈对栈完成初始化
+//     std::stack<int,std::list<int>> my_stack_2(my_stack_0);
+//     // c++11的新标准可以直接完成初始化
+//     std::stack<int,std::list<int>> my_stack_1({11,22,33,44,55});
+
+//     // 增加元素
+//     my_stack_1.emplace(9);
+//     my_stack_1.emplace(8);
+//     my_stack_1.emplace(7);
+//     my_stack_1.emplace(6);
+//     // 访问栈顶的元素
+//     std::cout << my_stack_0.top() << std::endl;
+//     // 弹出栈顶元素
+//     my_stack_0.pop();
+//     std::cout << my_stack_0.top() << std::endl;
+//     // 增加元素
+//     my_stack_0.push(1);
+//     std::cout << my_stack_0.top() << std::endl;
+//     my_stack_0.emplace(22);
+//     std::cout << my_stack_0.top() << std::endl;
+//     // 返回栈的大小
+//     std::cout << my_stack_0.size() << std::endl;
+//     my_stack_0.swap(my_stack_1);
+
+//     std::cout << my_stack_1.top() << std::endl;
+//     // 判断是否为空如果为空则返回true
+//     std::cout << my_stack_1.empty() << std::endl;
+
+//     return 0;
+// }
+
+// @这是研究vector容器的演示代码
+
+// #include <iostream>
+// // 翻译为向量，在cpp中被称为容器，因为它可以装许多类型的数据
+// #include <vector>
+// //  格式化输出 流操作算子
+// #include <iomanip>
+// // 算法 algorithm 用sort的时候会用到
+// #include <algorithm>
+
+// // 比较大小函数，小到大
+// inline bool Compare1(int a, int b);
+// // 大到小
+// inline bool Compare2(int a, int b);
+
+// int main(void)
+// {
+//     // 六个元素，均赋值为1.
+//     std::vector<int> my_vector(6, 1);
+//     // for的新标准，c++ 11，前面是类型，后跟名字，再:接要循环的对象。
+//     for (auto my_vector_e : my_vector)
+//     {
+//         std::cout << my_vector_e << std::endl;
+//     }
+//     // 清除容器中所有的元素，不单单是把值归0，是直接释放
+//     my_vector.clear();
+
+//     std::cout << "*****" << std::endl;
+
+//     // 尾部插入
+//     my_vector.push_back(0);
+//     my_vector.push_back(1);
+//     my_vector.push_back(2);
+//     my_vector.push_back(3);
+//     my_vector.push_back(4);
+
+//     for (auto my_vector_e : my_vector)
+//     {
+//         std::cout << my_vector_e << std::endl;
+//     }
+//     // 这是容量，是一个容器的直接大小
+//     std::cout << "my_vector.capacity() =" << my_vector.capacity() << std::endl;
+//     // size 就是具体有几个元素
+//     std::cout << "my_vector.size() =" << my_vector.size() << std::endl;
+
+//     // 尾部删除
+//     my_vector.pop_back();
+
+//     std::cout << "my_vector.size() =" << my_vector.size() << std::endl;
+//     // 调用algorithm算法库中的sort应该是快排的函数，三个指针，首地址，尾地址，比较函数的地址
+//     // 小到大排序
+//     sort(my_vector.begin(), my_vector.end(), Compare1);
+
+//     std::cout << "*******" << std::endl;
+//     for (auto i : my_vector)
+//     {
+//         std::cout << i << std::endl;
+//     }
+//     // 大到小排序
+//     sort(my_vector.begin(), my_vector.end(), Compare2);
+
+//     std::cout << "*******" << std::endl;
+
+//     for (auto i : my_vector)
+//     {
+//         std::cout << i << std::endl;
+//     }
+
+//     std::cout << "my_vector.at(0)=" << my_vector.at(0) << std::endl;
+
+//     // 二维vector
+//     std::vector<std::vector<int>> obj(5, std::vector<int>(6));
+//     for (int i = 0; i < obj.size(); i++)
+//     {
+//         for (int j = 0; j < obj[i].size(); j++)
+//         {
+//             // 按照索引顺序对应赋值。
+//             obj[i][j] = 6 * i + j;
+//             // 默认右对齐以及十进制
+//             // 这里用了左对齐，以及设置宽度函数
+//             std::cout << std::left << std::setw(4) << obj[i][j] << " ";
+//         }
+
+//         std::cout << std::endl;
+//     }
+// }
+
+// // 小于就是小到大
+// inline bool Compare1(int a, int b)
+// {
+//     return a < b;
+// }
+// // 大于就是大到小
+// inline bool Compare2(int a, int b)
+// {
+//     return a > b;
+// }
+// // @用链表实现栈
+
+// #include <iostream>
+// // 链表节点
+// struct ListNode
+// {
+//     int val;
+//     ListNode *next;
+//     ListNode(int v = 0) : val(v), next(nullptr) {}
+// };
+
+// class LinkedListStack
+// {
+// private:
+//     // 头节点也就是栈顶，这样非常便利，pop，push都很好实现，否则就需要遍历到链表尾部。
+//     // 注意理解栈的特性，把头节点当作栈顶非常符合栈，入栈出栈。
+//     ListNode *stack_top;
+//     // 栈的大小
+//     int stack_size;
+
+// public:
+//     // 构造函数
+//     LinkedListStack()
+//         : stack_size(0), stack_top(nullptr) {}
+//     // 释放链表内存
+//     void FreeMemoryLinkedList();
+//     // 析构函数
+//     ~LinkedListStack()
+//     {
+//         FreeMemoryLinkedList();
+//     }
+//     // pop
+//     void Pop();
+//     // push
+//     void Push(int number);
+//     // size
+//     int Size();
+//     // empty
+//     bool Empty();
+//     // top
+//     int Top();
+// };
+
+// int main(void)
+// {
+//     LinkedListStack my_stack;
+//     my_stack.Push(1);
+//     my_stack.Push(2);
+//     my_stack.Push(3);
+//     my_stack.Push(4);
+//     my_stack.Push(5);
+//     my_stack.Push(6);
+//     std::cout << "my_stack.Size()=" << my_stack.Size() << std::endl;
+//     std::cout << "my_stack.Top()=" << my_stack.Top() << std::endl;
+
+//     my_stack.Pop();
+//     std::cout << "my_stack.Top()=" << my_stack.Top() << std::endl;
+//     std::cout << "my_stack.Size()=" << my_stack.Size() << std::endl;
+//     return 0;
+// }
+
+// // LinkedListStack
+// void LinkedListStack::FreeMemoryLinkedList()
+// {
+
+//     while (stack_top != nullptr)
+//     {
+//         ListNode *p_temp = stack_top;
+//         stack_top = stack_top->next;
+//         p_temp->next = nullptr;
+//         delete p_temp;
+//     }
+//     stack_size = 0;
+// }
+
+// void LinkedListStack::Pop()
+// {
+//     ListNode *p_temp = stack_top;
+//     stack_top = stack_top->next;
+//     p_temp->next = nullptr;
+//     delete p_temp;
+//     stack_size--;
+// }
+
+// void LinkedListStack::Push(int number)
+// {
+//     ListNode *new_node = new ListNode(number);
+//     new_node->next = stack_top;
+//     stack_top = new_node;
+//     stack_size++;
+// }
+
+// int LinkedListStack::Size()
+// {
+//     return stack_size;
+// }
+
+// bool LinkedListStack::Empty()
+// {
+//     if (stack_top == nullptr)
+//     {
+//         return true;
+//     }
+
+//     return false;
+// }
+
+// int LinkedListStack::Top()
+// {
+//     return stack_top->val;
+// }
+
+// // @ 初探queue
+// #include <iostream>
+// // 需要包含头文件
+// #include <queue>
+// #include <list>
+
+// int main(void)
+// {
+//     // c++11新标准 初始化单向队列
+//     std::queue<int> my_queue_0({1, 2, 3, 4, 5, 6});
+//     // 列表可以直接初始化
+//     std::list<int> my_list_0 = {9, 8, 7, 6, 5, 4};
+//     // 以链表为底层容器完成对queue完成初始化
+//     std::queue<int, std::list<int>> my_queue_1(my_list_0);
+//     // 默认的底层容器为双端队列deque，这样就只能通过后面自己往里面增加元素。
+//     std::queue<int> my_queue_2;
+
+//     // 先入先出，后端插入，前端弹出
+
+//     // 打印头元素
+//     std::cout << "my_queue_0.front()=" <<my_queue_0.front() << std::endl;
+//     // 弹出头元素
+//     my_queue_0.pop();
+//     // 打印新的头元素
+//     std::cout << "my_queue_0.front()=" <<my_queue_0.front() << std::endl;
+//     // 尾插
+//     my_queue_0.emplace(7);
+//     // 打印尾元素
+//     std::cout << "my_queue_0.back()=" <<my_queue_0.back() << std::endl;
+//     // queue size
+//     std::cout << "my_queue_0.size()=" <<my_queue_0.size() << std::endl;
+
+//     return 0;
+// }
+
+// // @用栈实现队列
+// // 栈是先入后出，尾插尾弹，队列是先入先出，尾插头弹。
+
+// // 很好的一个思路，就是创建两个栈，另一个栈作为辅助，他们一个正着装一个反这装这样弹出访问插入都可以实现了。这是看别人的思路
+// // 我自己的思路就是在弹出头部是导两次，中间做一个临时的栈，最后返回弹出后的新栈。
+// #include <iostream>
+// #include <stack>
+// class StackToQueue
+// {
+// private:
+//     // 创建两个栈，来满足头删除，把栈的栈底当作是队列的头部
+//     std::stack<int> stack_to_queue_0;
+//     std::stack<int> stack_to_queue_1;
+
+// public:
+//     // pop
+//     void Pop();
+//     // front
+//     int Front();
+//     // back
+//     int Back();
+//     // push
+//     void Push(int val);
+//     // size
+//     int Size();
+//     // empye
+//     bool Empty();
+// };
+// int main(void)
+// {
+//     StackToQueue my_queue;
+//     my_queue.Push(1);
+//     my_queue.Push(2);
+//     my_queue.Push(3);
+//     my_queue.Push(4);
+//     my_queue.Push(5);
+//     my_queue.Push(6);
+
+//     std::cout << "my_queue.Size() =" << my_queue.Size() << std::endl;
+//     std::cout << "my_queue.Front() =" << my_queue.Front() << std::endl;
+//     std::cout << "my_queue.Back() =" << my_queue.Back() << std::endl;
+//     std::cout << "my_queue.Empty() =" << my_queue.Empty() << std::endl;
+
+//     my_queue.Pop();
+
+//     std::cout << "my_queue.Size() =" << my_queue.Size() << std::endl;
+//     std::cout << "my_queue.Front() =" << my_queue.Front() << std::endl;
+//     std::cout << "my_queue.Back() =" << my_queue.Back() << std::endl;
+//     std::cout << "my_queue.Empty() =" << my_queue.Empty() << std::endl;
+
+//     my_queue.Pop();
+//     my_queue.Pop();
+//     my_queue.Pop();
+//     my_queue.Pop();
+//     my_queue.Pop();
+//     std::cout << "my_queue.Size() =" << my_queue.Size() << std::endl;
+//     std::cout << "my_queue.Empty() =" << my_queue.Empty() << std::endl;
+//     return 0;
+// }
+
+// // 以下函数实现比较巧妙的都是两个栈来回转，进去之前判断一下想实现的功能对应的栈的另一个栈是否为空，不为空就导到想实现的功能的所对应的栈，为空就说明已经在对应栈中直接执行。
+// // StackToQueue
+
+// // 由于用栈来实现队列，队列的弹出是头部弹出，栈是尾部弹出，所以需要把0栈中的元素弹出然后再入栈到1栈中此时1栈的尾部就正好是原队列的头部，直接用栈中的pop弹出即可。
+// // 此处不需要再考虑说要不要把1栈中的元素再导回到0栈中。
+// // 有两种处理方案。
+// // 1.是向下面实现的方式，数据只存储在两个栈中，每次进去只需要检测一下对应栈中的是否为空。然后实现功能即可，不为空就需要导一下。
+// // 2.是向上面说的，始终把数据留存在栈0中如果需要导过去实现完功能后再在函数中倒回来。
+// // 综上，由于每次调用函数所需栈的功能是不一样的有时候是栈1，有时候需要栈0，一直留存在栈0中不一定会比第一种方案合适。
+
+// void StackToQueue::Pop()
+// {
+//     while (stack_to_queue_0.empty() != true)
+//     {
+//         int temp = stack_to_queue_0.top();
+//         stack_to_queue_1.push(temp);
+//         stack_to_queue_0.pop();
+//     }
+//     // 栈1的尾部就是原队列的头部，也就是栈0的栈底（栈0的头部）
+//     stack_to_queue_1.pop();
+// }
+
+// int StackToQueue::Front()
+// {
+//     // 有两种情况，第一种是数据储存在satck0中，此时需要弹出再入栈然后返回stack1top
+//     // 第二种已经储存在stack1中那就直接返回top非常巧妙！！！！
+//     while (stack_to_queue_0.empty() != true)
+//     {
+//         int temp = stack_to_queue_0.top();
+//         stack_to_queue_1.push(temp);
+//         stack_to_queue_0.pop();
+//     }
+//     // 栈1的尾部就是队列的头部
+//     return stack_to_queue_1.top();
+// }
+
+// int StackToQueue::Back()
+// {
+//     while (stack_to_queue_1.empty() != true)
+//     {
+//         int temp = stack_to_queue_1.top();
+//         stack_to_queue_0.push(temp);
+//         stack_to_queue_1.pop();
+//     }
+//     // 非常巧妙，如果为空就直接返回stack0top，如果不为空就导一下。
+//     // 栈0的尾部就是队列的尾部
+//     return stack_to_queue_0.top();
+// }
+
+// void StackToQueue::Push(int val)
+// {
+//     // 尾插
+//     while (stack_to_queue_1.empty() != true)
+//     {
+//         int temp = stack_to_queue_1.top();
+//         stack_to_queue_0.push(temp);
+//         stack_to_queue_1.pop();
+//     }
+//     // 栈0的尾部就是队列的尾部
+//     stack_to_queue_0.push(val);
+// }
+
+// // 以下两个函数就都是判断一下是否为空，找到不为空的栈，也就是找到存放现在数据的栈，以免返回错误的值。
+
+// int StackToQueue::Size()
+// {
+//     if (stack_to_queue_0.empty() != true)
+//     {
+//         return stack_to_queue_0.size();
+//     }
+//     else
+//     {
+//         return stack_to_queue_1.size();
+//     }
+// }
+
+// bool StackToQueue::Empty()
+// {
+//     if (stack_to_queue_0.empty() && stack_to_queue_1.empty())
+//     {
+//         return true;
+//     }
+//     return false;
+// }
+
+// // @ 双链表实现双向队列
+// // 第二版-自己想想那些地方可以更加简洁高效
+// #include <iostream>
+// // double是一种数据类型，doubly为前缀意为双向
+// struct DoublyListNode
+// {
+//     int val;
+//     DoublyListNode *next;
+//     DoublyListNode *prev;
+
+//     DoublyListNode(int num = 0)
+//         : val(num), next(nullptr), prev(nullptr) {}
+// };
+
+// class DoublyLinkedListDeque
+// {
+// private:
+//     // 头节点
+//     DoublyListNode *front;
+//     // 尾节点
+//     DoublyListNode *rear;
+//     int doubly_list_node_size;
+
+// public:
+//     // 默认构造函数完成初始化
+//     DoublyLinkedListDeque()
+//         : doubly_list_node_size(0), front(nullptr), rear(nullptr) {}
+//     // PushBack
+//     void PushBack(int num);
+//     // Empty
+//     bool Empty();
+//     // Size
+//     int Size();
+//     // PushFront
+//     void PushFront(int num);
+//     // PopBack
+//     void PopBack();
+//     // PopFront
+//     void PopFront();
+//     // Back
+//     int Back();
+//     // Front
+//     int Front();
+//     // Clear
+//     void Clear();
+// };
+// int main(void)
+// {
+//     // 实例化对象
+//     DoublyLinkedListDeque deque;
+
+//     // 测试 PushBack 和 PushFront
+//     deque.PushBack(1);
+//     deque.PushBack(2);
+//     deque.PushBack(3);
+//     deque.PushFront(0);
+
+//     std::cout << std::endl;
+
+//     // 测试 Size 和 Empty
+//     std::cout << "Deque size: " << deque.Size() << std::endl;
+//     // 条件运算符挺巧妙的
+//     std::cout << "Is deque empty? " << (deque.Empty() ? "Yes" : "No") << std::endl;
+
+//     // 测试 Front 和 Back
+//     std::cout << "Front element: " << deque.Front() << std::endl;
+//     std::cout << "Back element: " << deque.Back() << std::endl;
+
+//     // 测试 PopFront 和 PopBack
+//     deque.PopFront();
+//     std::cout << "Front element: " << deque.Front() << std::endl;
+//     deque.PopBack();
+//     std::cout << "Back element: " << deque.Back() << std::endl;
+
+//     // 测试 Clear
+//     deque.Clear();
+//     std::cout << "Deque size after clearing: " << deque.Size() << std::endl;
+
+//     return 0;
+// }
+
+// // DoublyLinkedListDeque
+// // 直接用size完成empty检验，就是需要注意控制size
+// bool DoublyLinkedListDeque::Empty()
+// {
+//     return (doubly_list_node_size == 0) ? true : false;
+// }
+// // 直接返回size
+// int DoublyLinkedListDeque::Size()
+// {
+//     return doubly_list_node_size;
+// }
+
+// // 尾插
+
+// void DoublyLinkedListDeque::PushBack(int num)
+// {
+//     // new一块内存
+//     DoublyListNode *new_node = new DoublyListNode(num);
+//     // 如果size为0则头尾指针都指向这块节点
+//     if (doubly_list_node_size == 0)
+//     {
+//         front = new_node;
+//         rear = new_node;
+//     }
+//     else
+//     {
+//         // size不为零则就newnode接上然后让尾指针指向新的尾节点
+//         new_node->prev = rear;
+//         rear->next = new_node;
+//         rear = new_node;
+//     }
+//     doubly_list_node_size++;
+// }
+// // 头插
+// void DoublyLinkedListDeque::PushFront(int num)
+// {
+//     // new一块节点，其余同理尾插
+//     DoublyListNode *new_node = new DoublyListNode(num);
+//     if (doubly_list_node_size == 0)
+//     {
+//         front = new_node;
+//         rear = new_node;
+//     }
+//     else
+//     {
+//         new_node->next = front;
+//         front->prev = new_node;
+//         front = new_node;
+//     }
+//     doubly_list_node_size++;
+// }
+// // 尾删
+// void DoublyLinkedListDeque::PopBack()
+// {
+//     // 还存在一种为0的情况，但是为0不需要进行任何操作因此就直接跳跃
+//     if (doubly_list_node_size == 1)
+//     {
+//         DoublyListNode *temp = front;
+//         delete temp;
+//         temp = nullptr;
+//         front = nullptr;
+//         rear = nullptr;
+//         // 但是注意不能把这个移到外面去，因为size为0也会进入函数，如果把它放到外面就会size-1，本来就是0再-1就会出问题。
+//         doubly_list_node_size--;
+//     }
+//     else if (doubly_list_node_size > 1)
+//     {
+//         rear = rear->prev;
+//         delete rear->next;
+//         rear->next = nullptr;
+//         doubly_list_node_size--;
+//     }
+// }
+// // 头删
+// void DoublyLinkedListDeque::PopFront()
+// {
+//     if (doubly_list_node_size == 1)
+//     {
+//         delete front;
+//         front = nullptr;
+//         rear = nullptr;
+//         doubly_list_node_size--;
+//     }
+//     else if (doubly_list_node_size > 1)
+//     {
+//         front = front->next;
+//         delete front->prev;
+//         front->prev = nullptr;
+//         doubly_list_node_size--;
+//     }
+// }
+
+// int DoublyLinkedListDeque::Back()
+// {
+//     return (doubly_list_node_size == 0) ? -1 :rear->val;
+// }
+
+// int DoublyLinkedListDeque::Front()
+// {
+//     return (doubly_list_node_size == 0) ? -1 :front->val;
+// }
+
+// void DoublyLinkedListDeque::Clear()
+// {
+//     if (doubly_list_node_size > 0)
+//     {
+//         while (front->next != nullptr)
+//         {
+//             PopFront();
+//         }
+//         rear = nullptr;
+//         doubly_list_node_size = 0;
+//     }
+// }
+// // @ 双链表实现双向队列
+// // 第一版-自己手撸出来的，有些地方可以进行优化，简洁高效
+// #include <iostream>
+// // double是一种数据类型，doubly为前缀意为双向
+// struct DoublyListNode
+// {
+//     int val;
+//     DoublyListNode *next;
+//     DoublyListNode *prev;
+
+//     DoublyListNode(int num = 0)
+//         : val(num), next(nullptr), prev(nullptr) {}
+// };
+
+// class DoublyLinkedListDeque
+// {
+// private:
+//     // 头节点
+//     DoublyListNode *front;
+//     // 尾节点
+//     DoublyListNode *rear;
+//     int doubly_list_node_size;
+
+// public:
+//     DoublyLinkedListDeque()
+//         : doubly_list_node_size(0), front(nullptr), rear(nullptr) {}
+//     // PushBack
+//     void PushBack(int num);
+//     // Empty
+//     bool Empty();
+//     // Size
+//     int Size();
+
+//     // PushFront
+//     void PushFront(int num);
+//     // PopBack
+//     void PopBack();
+//     // PopFront
+//     void PopFront();
+//     // Back
+//     int Back();
+//     // Front
+//     int Front();
+//     // Clear
+//     void Clear();
+// };
+// int main(void)
+// {
+//     DoublyLinkedListDeque deque;
+
+//     // 测试 PushBack 和 PushFront
+//     deque.PushBack(1);
+//     deque.PushBack(2);
+//     deque.PushBack(3);
+//     deque.PushFront(0);
+
+//     std::cout << std::endl;
+
+//     // 测试 Size 和 Empty
+//     std::cout << "Deque size: " << deque.Size() << std::endl;
+//     std::cout << "Is deque empty? " << (deque.Empty() ? "Yes" : "No") << std::endl;
+
+//     // 测试 Front 和 Back
+//     std::cout << "Front element: " << deque.Front() << std::endl;
+//     std::cout << "Back element: " << deque.Back() << std::endl;
+
+//     // 测试 PopFront 和 PopBack
+//     deque.PopFront();
+//     std::cout << "Front element: " << deque.Front() << std::endl;
+//     deque.PopBack();
+//     std::cout << "Back element: " << deque.Back() << std::endl;
+
+//     // 测试 Clear
+//     deque.Clear();
+//     std::cout << "Deque size after clearing: " << deque.Size() << std::endl;
+
+//     return 0;
+// }
+
+// // DoublyLinkedListDeque
+// bool DoublyLinkedListDeque::Empty()
+// {
+//     if (doubly_list_node_size == 0)
+//     {
+//         return true;
+//     }
+//     return false;
+// }
+
+// int DoublyLinkedListDeque::Size()
+// {
+//     return doubly_list_node_size;
+// }
+
+// // 尾插
+// void DoublyLinkedListDeque::PushBack(int num)
+// {
+//     DoublyListNode *new_node = new DoublyListNode(num);
+//     if(doubly_list_node_size==0)
+//     {
+//         front = new_node;
+//         rear = new_node;
+//         doubly_list_node_size++;
+//     }
+//     else
+//     {
+//         new_node->prev = rear;
+//         new_node->next = nullptr;
+//         rear->next = new_node;
+//         rear = new_node;
+//         doubly_list_node_size++;
+//     }
+// }
+// // 头插
+// void DoublyLinkedListDeque::PushFront(int num)
+// {
+//     DoublyListNode *new_node = new DoublyListNode(num);
+//     if (doubly_list_node_size == 0)
+//     {
+//         front = new_node;
+//         rear = new_node;
+//         doubly_list_node_size++;
+//     }
+//     else
+//     {
+//         new_node->next = front;
+//         new_node->prev = nullptr;
+//         front->prev = new_node;
+//         front = new_node;
+//         doubly_list_node_size++;
+//     }
+// }
+// // 没处理只有一个的情况
+// void DoublyLinkedListDeque::PopBack()
+// {
+//     if(doubly_list_node_size==0)
+//     {
+
+//     }
+//     else if(doubly_list_node_size==1)
+//     {
+//         DoublyListNode *temp = front;
+//         delete temp;
+//         temp = nullptr;
+//         front = nullptr;
+//         rear = nullptr;
+//     }
+//     else
+//     {
+//         rear = rear->prev;
+//         DoublyListNode *temp = rear->next;
+//         rear->next = nullptr;
+//         temp->prev = nullptr;
+//         delete temp;
+//         temp = nullptr;
+//         doubly_list_node_size--;
+//     }
+// }
+// // 头删
+// void DoublyLinkedListDeque::PopFront()
+// {
+//     if (doubly_list_node_size == 0)
+//     {
+//     }
+//     else if (doubly_list_node_size == 1)
+//     {
+//         DoublyListNode *temp = front;
+//         delete temp;
+//         temp = nullptr;
+//         front = nullptr;
+//         rear = nullptr;
+//     }
+//     else
+//     {
+//         front = front->next;
+//         DoublyListNode *temp = front->prev;
+//         temp->next = nullptr;
+//         front->prev = nullptr;
+//         delete temp;
+//         temp = nullptr;
+//         doubly_list_node_size--;
+//     }
+// }
+
+// int DoublyLinkedListDeque::Back()
+// {
+//     if(doubly_list_node_size==0)
+//     {
+//         return -1;
+//     }
+//     else
+//     {
+//         return rear->val;
+//     }
+// }
+
+// int DoublyLinkedListDeque::Front()
+// {
+//     if(doubly_list_node_size==0)
+//     {
+//         return -1;
+//     }
+//     else
+//     {
+//         return front->val;
+//     }
+// }
+
+// void DoublyLinkedListDeque::Clear()
+// {
+//     if(doubly_list_node_size==0)
+//     {
+
+//     }
+//     else
+//     {
+//         while(front->next!=nullptr)
+//         {
+//             PopFront();
+//         }
+//         delete rear;
+//         rear = nullptr;
+//         doubly_list_node_size = 0;
+//     }
+// }
+
+
+// @初探哈希表
+#include <iostream>
+// 需要包含头文件，ordered是无序的意思
+#include <unordered_map>
+
+int main()
+{
+    std::unordered_map<std::string, int> myMap;
+    // ...
+    return 0;
+}
