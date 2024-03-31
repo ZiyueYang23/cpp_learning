@@ -2288,127 +2288,214 @@
 //     }
 // }
 
-// 戒骄戒躁
-// @用动态数组实现哈希表
-#include <iostream>
-#include <vector>
-#include <string>
+// // 戒骄戒躁
+// // @用动态数组实现哈希表
+// #include <iostream>
+// #include <vector>
+// #include <string>
 
-struct Pair
-{
-    // 键
-    int key;
-    // 值
-    std::string val;
+// struct Pair
+// {
+//     // 键
+//     int key;
+//     // 值
+//     std::string val;
 
-    // 默认构造函数
-    Pair(int key, std::string val)
-    {
-        this->key = key;
-        this->val = val;
-    }
-};
-// chaining 链地址法 本来是要用链表的
-class HashMapChaining
-{
-private:
-    int size;                                 // 键值对数量
-    int capacity;                             // 哈希表容量
-    double load_thres;                        // 触发扩容的负载因子阈值
-    int extend_ratio;                         // 扩容倍数
-    std::vector<std::vector<Pair *>> buckets; // 桶数组
-public:
-    // 构造
-    HashMapChaining();
-    // 析构
-    ~HashMapChaining();
-    // 哈希函数
-    int HashFunction(int key);
-    // 负载因子
-    double load_factor()
-    {
-        return (double)size / (double)capacity;
-    }
-    // 增
-    void Push(int key, std::string val);
-    // 扩容
-    void Expand();
-    // 删
-    void Remove(int key);
-    // 更新
-    // 查
-    // 改
-    // 打印
-};
+//     // 默认构造函数
+//     Pair(int key, std::string val)
+//     {
+//         this->key = key;
+//         this->val = val;
+//     }
+// };
+// // chaining 链地址法 本来是要用链表的，用动态数组更加方便
+// class HashMapChaining
+// {
+// private:
+//     int size_;                                 // 键值对数量
+//     int capacity_;                             // 哈希表容量
+//     double load_thres_;                        // 触发扩容的负载因子阈值
+//     int extend_ratio_;                         // 扩容倍数
+//     std::vector<std::vector<Pair *>> buckets_; // 桶数组
+// public:
+//     // 构造
+//     HashMapChaining();
+//     // 析构
+//     ~HashMapChaining();
+//     // 哈希函数
+//     int HashFunction(int key);
+//     // 负载因子
+//     double load_factor();
+//     // 增
+//     void Push(int key, std::string val);
+//     // 扩容
+//     void Expand();
+//     // 删
+//     void Remove(int key);
+//     // 更新
+//     void Change(int key, std::string val);
+//     // 查
+//     std::string Find(int key);
+//     // 打印
+//     void PrintHashMapChaining();
+// };
 
-HashMapChaining::HashMapChaining()
-    : size(0), capacity(4), load_thres(2.0 / 3.0), extend_ratio(2)
-{
-    // resize 是重新调整大小的操作，如果大于当前大小则向vector添加新的元素，如果capacity小于当前大小，则删除多余元素。
-    buckets.resize(capacity);
-}
+// int main()
+// {
+//     HashMapChaining hashMap;
 
-HashMapChaining::~HashMapChaining()
-{
-    for (auto &bucket : buckets)
-    {
-        for (Pair *pair : bucket)
-        {
-            delete pair;
-        }
-    }
-}
+//     // 插入键值对
+//     hashMap.Push(11111, "One");
+//     hashMap.Push(22222, "Two");
+//     hashMap.Push(33333, "Three");
+//     hashMap.Push(44444, "Four");
 
-int HashMapChaining::HashFunction(int key)
-{
-    return key % capacity;
-}
+//     // 输出当前哈希表内容
+//     hashMap.PrintHashMapChaining();
 
-void HashMapChaining::Push(int key, std::string val)
-{
-    // 需要注意扩容操作
-    if (load_factor() > load_thres)
-    {
-        Expand();
-    }
+//     // 修改键为 2 的值
+//     hashMap.Change(22222, "New Two");
 
-    int index = HashFunction(key);
+//     // 输出修改后的哈希表内容
+//     hashMap.PrintHashMapChaining();
 
-    buckets[index].emplace_back(new Pair(key, val));
-    size++;
-}
+//     // 删除键为 3 的键值对
+//     hashMap.Remove(33333);
 
-// 不单单是容量变化因为你哈希函数中计算出的哈希值是根据容量算的，扩容之后容量变了对应的哈希值也就变了
-void HashMapChaining::Expand()
-{
-    std::vector<std::vector<Pair *>> buckets_tmp = buckets;
-    capacity = capacity * extend_ratio;
-    buckets.clear();
-    buckets.resize(capacity);
-    size = 0;
-    for (auto &bucket : buckets_tmp)
-    {
-        for (Pair *pair : bucket)
-        {
-            Push(pair->key, pair->val);
-            delete pair;
-        }
-    }
-}
+//     // 输出删除后的哈希表内容
+//     hashMap.PrintHashMapChaining();
 
-void HashMapChaining::Remove(int key)
-{
-    int index = HashFunction(key);
-    auto &bucket = buckets[index];
-    // 遍历桶，从中删除键值对
-    for (int i = 0; i < bucket.size(); i++)
-    {
-        if (bucket[i]->key == key)
-        {
-            Pair *tmp = bucket[i];
-            bucket.erase(bucket.begin() + i); // 从中删除键值对
-            delete tmp; // 释放内存
-            size--;
-        }
-    }
-}
+//     return 0;
+// }
+
+// // HashMapChaining
+
+// HashMapChaining::HashMapChaining()
+//     : size_(0), capacity_(4), load_thres_(2.0 / 3.0), extend_ratio_(2)
+// {
+//     // resize 是重新调整大小的操作，如果大于当前大小则向vector添加新的元素，如果capacity小于当前大小，则删除多余元素。
+//     buckets_.resize(capacity_);
+// }
+
+// // 析构函数释放内存
+// HashMapChaining::~HashMapChaining()
+// {
+//     for (auto &bucket : buckets_)
+//     {
+//         for (Pair *pair : bucket)
+//         {
+//             delete pair;
+//         }
+//     }
+// }
+// // 负载因子
+// inline double HashMapChaining::load_factor()
+// {
+//     // 返回当时的负载因子，如果超过了开始设定的2/3，就会发生扩容
+//     return (double)size_ / (double)capacity_;
+// }
+
+// // 哈希函数-就是简单的取模
+// inline int HashMapChaining::HashFunction(int key)
+// {
+//     return key % capacity_;
+// }
+
+// // 增加元素
+// void HashMapChaining::Push(int key, std::string val)
+// {
+//     // 需要注意扩容操作，如果此时负载因子大于阈值则发生扩容
+//     if (load_factor() > load_thres_)
+//     {
+//         Expand();
+//     }
+//     // 找下标
+//     int index = HashFunction(key);
+//     // 桶里面装的还是桶，是动态数组，直接用emplace_back即可完成插入元素。
+//     buckets_[index].emplace_back(new Pair(key, val));
+//     size_++;
+// }
+
+// // 不单单是容量变化因为你哈希函数中计算出的哈希值是根据容量算的，扩容之后容量变了对应的哈希值也就变了
+// void HashMapChaining::Expand()
+// {
+//     // 精髓在此处
+//     // 首先先创建一个临时的桶来装原来所有桶的元素，发生的是拷贝构造函数
+//     std::vector<std::vector<Pair *>> buckets_tmp = buckets_;
+//     // 扩容操作
+//     capacity_ = capacity_ * extend_ratio_;
+//     // 清空原来的桶，为何？ 是因为新的桶容量变大后，key所对应的索引也会变化，因此把原桶清空再一个个插入新桶即可
+//     buckets_.clear();
+//     // 重新定义容量
+//     buckets_.resize(capacity_);
+//     // 让size归0 ，因为你push函数里面是有size++的
+//     size_ = 0;
+//     // 传引用进去，然后一个个用push从临时桶出去再进入新桶，并且删除了旧桶的内存
+//     for (auto &bucket : buckets_tmp)
+//     {
+//         for (Pair *pair : bucket)
+//         {
+//             Push(pair->key, pair->val);
+//             delete pair;
+//         }
+//     }
+// }
+
+// // 删除元素还是找索引，进入二级桶遍历每一块pair如果key相同则删除size--
+// void HashMapChaining::Remove(int key)
+// {
+//     int index = HashFunction(key);
+//     auto &bucket = buckets_[index];
+//     // 遍历桶，从中删除键值对
+//     for (int i = 0; i < bucket.size(); i++)
+//     {
+//         if (bucket[i]->key == key)
+//         {
+//             Pair *tmp = bucket[i];
+//             bucket.erase(bucket.begin() + i); // 从中删除键值对
+//             delete tmp;                       // 释放内存
+//             size_--;
+//             // 小技巧，如果找到之后就不需要再进行遍历找元素了，直接返回即可，就算无返回值，也可以使用return，提前结束掉函数。
+//             return;
+//         }
+//     }
+// }
+// // 更新元素
+// void HashMapChaining::Change(int key, std::string val)
+// {
+//     int index = HashFunction(key);
+
+//     for (Pair *pair : buckets_[index])
+//     {
+//         if (pair->key == key)
+//         {
+//             pair->val = val;
+//             return;
+//         }
+//     }
+// }
+// //查找元素
+// std::string HashMapChaining::Find(int key)
+// {
+//     int index = HashFunction(key);
+
+//     for (Pair *pair : buckets_[index])
+//     {
+//         if (pair->key == key)
+//         {
+//             return pair->val;
+//         }
+//     }
+//     return "";
+// }
+// //打印
+// void HashMapChaining::PrintHashMapChaining()
+// {
+//     for (auto const bucket : buckets_)
+//     {
+//         for (Pair *const pair : bucket)
+//         {
+//             std::cout << "key = " << pair->key << " , val = " << pair->val << std::endl;
+//         }
+//     }
+// }
