@@ -2124,13 +2124,176 @@
 //     return 0;
 // }
 
-// @简单实现哈希表
-// 底层实现就是数组，用数组下标作为所谓哈希值，然后通过直接取模得出，对应索引，哈希函数相当简单
+// // @简单实现哈希表
+// // 底层实现就是数组，用数组下标作为所谓哈希值，然后通过直接取模得出，对应索引，哈希函数相当简单
 
+// #include <iostream>
+// #include <string>
+// #include <vector>
+// // c++中有这个类模板，就是一对的意思，类模板可以存任意两个类型的一对值，比如用作一个键值对，现在我自己写一个Pair
+// struct Pair
+// {
+//     // 键
+//     int key;
+//     // 值
+//     std::string val;
+
+//     // 默认构造函数
+//     Pair(int key, std::string val)
+//     {
+//         this->key = key;
+//         this->val = val;
+//     }
+// };
+
+// class ArrayHashMap
+// {
+// private:
+//     // 这里存放指针更加高效
+//     std::vector<Pair *> buckets_;
+//     const int kCapacity_;
+
+// public:
+//     // 默认构造函数
+//     ArrayHashMap();
+//     // 析构函数
+//     ~ArrayHashMap();
+
+//     int HashFuntion(int key);
+//     // 增
+//     void Push(int key, std::string val);
+//     // 删
+//     void Remove(int key);
+//     // 查
+//     std::string Get(int key);
+//     // 改
+//     void Change(int key, std::string val);
+//     // 打印
+//     void PrintPair();
+// };
+
+// int main()
+// {
+//     ArrayHashMap map;
+
+//     // 添加键值对
+//     map.Push(12357, "Hello");
+//     map.Push(46889, "Hash");
+//     map.Push(23436, "Table");
+
+//     // 打印哈希表
+//     std::cout << "Initial ArrayHashMap:" << std::endl;
+//     map.PrintPair();
+
+//     // 修改值
+//     map.Change(46889, "ArrayHash");
+//     map.Change(23436, "Map");
+
+//     std::cout << "\nAfter ArrayHashMap:" << std::endl;
+//     map.PrintPair();
+
+//     // 获取值
+//     std::cout << "\nValue for key 12357: " << map.Get(12357) << std::endl;
+//     std::cout << "Value for key 23436: " << map.Get(23436) << std::endl;
+//     std::cout << "Value for key 46889: " << map.Get(46889) << std::endl;
+
+//     // 移除键值对
+//     map.Remove(12357);
+//     map.Remove(23436);
+
+//     std::cout << "\nAfter Removal:" << std::endl;
+//     map.PrintPair();
+
+//     return 0;
+// }
+
+// // *ArrayHashMap*
+
+// ArrayHashMap::ArrayHashMap()
+//     : kCapacity_(100)
+// {
+//     // 创建100个桶，桶中存放的都是Pair类型的指针
+//     buckets_ = std::vector<Pair *>(kCapacity_);
+// }
+
+// ArrayHashMap::~ArrayHashMap()
+// {
+//     // 释放内存，这里传引用进去，需要修改值
+//     for (const auto &bucket : buckets_)
+//     {
+//         delete bucket;
+//     }
+//     buckets_.clear();
+// }
+
+// // 简单的哈希函数
+// int ArrayHashMap::HashFuntion(int key)
+// {
+//     // 就是直接把key键对容量取模
+//     int index = key % kCapacity_;
+//     return index;
+// }
+
+// // 增添元素
+// void ArrayHashMap::Push(int key, std::string val)
+// {
+//     // new一块键值对
+//     Pair *new_pair = new Pair(key, val);
+//     // 找到下标
+//     int index = HashFuntion(key);
+//     // 对应下标存放键值对
+//     buckets_[index] = new_pair;
+// }
+// // 删除元素
+// void ArrayHashMap::Remove(int key)
+// {
+//     // 找到下标
+//     int index = HashFuntion(key);
+//     // delete对应下标的桶
+//     delete buckets_[index];
+//     // 注意delete之后需要将对应下标的桶指向nullptr
+//     buckets_[index] = nullptr;
+// }
+// // 查找元素
+// std::string ArrayHashMap::Get(int key)
+// {
+//     // 找到下标
+//     int index = HashFuntion(key);
+//     // 这里注意一种情况当桶里面是空指针时就不能返回val，此时是空指针没有val
+//     if (buckets_[index] == nullptr)
+//     {
+//         // 空指针就直接返回空字符串
+//         return "";
+//     }
+//     return buckets_[index]->val;
+// }
+// // 更改元素
+// void ArrayHashMap::Change(int key, std::string val)
+// {
+//     // 找到下标
+//     int index = HashFuntion(key);
+//     // 修改对应下标的值
+//     buckets_[index]->val = val;
+// }
+// // 打印哈希表
+// void ArrayHashMap::PrintPair()
+// {
+//     // 从0下标开始遍历数组，找到不为空的桶，并且打印输出下标和val，此时是找不到key的，无法通过哈希值也就是下标来反向寻找键key，一个键就对应一个下标，是唯一的
+//     for (int i(0); i < kCapacity_;i++)
+//     {
+//         if(buckets_[i]!=nullptr)
+//         {
+//             std::cout << "index = " << i << ", val = " << buckets_[i]->val << std::endl;
+//         }
+//     }
+// }
+
+// 戒骄戒躁
+// @用动态数组实现哈希表
 #include <iostream>
-#include <string>
 #include <vector>
-// c++中有这个类模板，就是一对的意思，类模板可以存任意两个类型的一对值，比如用作一个键值对，现在我自己写一个Pair
+#include <string>
+
 struct Pair
 {
     // 键
@@ -2145,145 +2308,107 @@ struct Pair
         this->val = val;
     }
 };
-
-class ArrayHashMap
+// chaining 链地址法 本来是要用链表的
+class HashMapChaining
 {
 private:
-    // 这里存放指针更加高效
-    std::vector<Pair *> buckets_;
-    const int kCapacity_;
-
+    int size;                                 // 键值对数量
+    int capacity;                             // 哈希表容量
+    double load_thres;                        // 触发扩容的负载因子阈值
+    int extend_ratio;                         // 扩容倍数
+    std::vector<std::vector<Pair *>> buckets; // 桶数组
 public:
-    // 默认构造函数
-    ArrayHashMap();
-    // 析构函数
-    ~ArrayHashMap();
-
-    int HashFuntion(int key);
+    // 构造
+    HashMapChaining();
+    // 析构
+    ~HashMapChaining();
+    // 哈希函数
+    int HashFunction(int key);
+    // 负载因子
+    double load_factor()
+    {
+        return (double)size / (double)capacity;
+    }
     // 增
     void Push(int key, std::string val);
+    // 扩容
+    void Expand();
     // 删
     void Remove(int key);
+    // 更新
     // 查
-    std::string Get(int key);
     // 改
-    void Change(int key, std::string val);
     // 打印
-    void PrintPair();
 };
 
-int main()
+HashMapChaining::HashMapChaining()
+    : size(0), capacity(4), load_thres(2.0 / 3.0), extend_ratio(2)
 {
-    ArrayHashMap map;
-
-    // 添加键值对
-    map.Push(12357, "Hello");
-    map.Push(46889, "Hash");
-    map.Push(23436, "Table");
-
-    // 打印哈希表
-    std::cout << "Initial ArrayHashMap:" << std::endl;
-    map.PrintPair();
-
-    // 修改值
-    map.Change(46889, "ArrayHash");
-    map.Change(23436, "Map");
-
-    std::cout << "\nAfter ArrayHashMap:" << std::endl;
-    map.PrintPair();
-
-    // 获取值
-    std::cout << "\nValue for key 12357: " << map.Get(12357) << std::endl;
-    std::cout << "Value for key 23436: " << map.Get(23436) << std::endl;
-    std::cout << "Value for key 46889: " << map.Get(46889) << std::endl;
-
-    // 移除键值对
-    map.Remove(12357);
-    map.Remove(23436);
-
-    std::cout << "\nAfter Removal:" << std::endl;
-    map.PrintPair();
-
-    return 0;
+    // resize 是重新调整大小的操作，如果大于当前大小则向vector添加新的元素，如果capacity小于当前大小，则删除多余元素。
+    buckets.resize(capacity);
 }
 
-// *ArrayHashMap* 
-
-ArrayHashMap::ArrayHashMap()
-    : kCapacity_(100)
+HashMapChaining::~HashMapChaining()
 {
-    // 创建100个桶，桶中存放的都是Pair类型的指针
-    buckets_ = std::vector<Pair *>(kCapacity_);
-}
-
-ArrayHashMap::~ArrayHashMap()
-{
-    // 释放内存，这里传引用进去，需要修改值
-    for (const auto &bucket : buckets_)
+    for (auto &bucket : buckets)
     {
-        delete bucket;
-    }
-    buckets_.clear();
-}
-
-// 简单的哈希函数
-int ArrayHashMap::HashFuntion(int key)
-{
-    // 就是直接把key键对容量取模
-    int index = key % kCapacity_;
-    return index;
-}
-
-// 增添元素
-void ArrayHashMap::Push(int key, std::string val)
-{
-    // new一块键值对
-    Pair *new_pair = new Pair(key, val);
-    // 找到下标
-    int index = HashFuntion(key);
-    // 对应下标存放键值对
-    buckets_[index] = new_pair;
-}
-// 删除元素
-void ArrayHashMap::Remove(int key)
-{
-    // 找到下标
-    int index = HashFuntion(key);
-    // delete对应下标的桶
-    delete buckets_[index];
-    // 注意delete之后需要将对应下标的桶指向nullptr
-    buckets_[index] = nullptr;
-}
-// 查找元素
-std::string ArrayHashMap::Get(int key)
-{
-    // 找到下标
-    int index = HashFuntion(key);
-    // 这里注意一种情况当桶里面是空指针时就不能返回val，此时是空指针没有val
-    if (buckets_[index] == nullptr)
-    {
-        // 空指针就直接返回空字符串
-        return "";
-    }
-    return buckets_[index]->val;
-}
-// 更改元素
-void ArrayHashMap::Change(int key, std::string val)
-{
-    // 找到下标
-    int index = HashFuntion(key);
-    // 修改对应下标的值
-    buckets_[index]->val = val;
-}
-// 打印哈希表
-void ArrayHashMap::PrintPair()
-{
-    // 从0下标开始遍历数组，找到不为空的桶，并且打印输出下标和val，此时是找不到key的，无法通过哈希值也就是下标来反向寻找键key，一个键就对应一个下标，是唯一的
-    for (int i(0); i < kCapacity_;i++)
-    {
-        if(buckets_[i]!=nullptr)
+        for (Pair *pair : bucket)
         {
-            std::cout << "index = " << i << ", val = " << buckets_[i]->val << std::endl;
+            delete pair;
+        }
+    }
+}
+
+int HashMapChaining::HashFunction(int key)
+{
+    return key % capacity;
+}
+
+void HashMapChaining::Push(int key, std::string val)
+{
+    // 需要注意扩容操作
+    if (load_factor() > load_thres)
+    {
+        Expand();
+    }
+
+    int index = HashFunction(key);
+
+    buckets[index].emplace_back(new Pair(key, val));
+    size++;
+}
+
+// 不单单是容量变化因为你哈希函数中计算出的哈希值是根据容量算的，扩容之后容量变了对应的哈希值也就变了
+void HashMapChaining::Expand()
+{
+    std::vector<std::vector<Pair *>> buckets_tmp = buckets;
+    capacity = capacity * extend_ratio;
+    buckets.clear();
+    buckets.resize(capacity);
+    size = 0;
+    for (auto &bucket : buckets_tmp)
+    {
+        for (Pair *pair : bucket)
+        {
+            Push(pair->key, pair->val);
+            delete pair;
+        }
+    }
+}
+
+void HashMapChaining::Remove(int key)
+{
+    int index = HashFunction(key);
+    auto &bucket = buckets[index];
+    // 遍历桶，从中删除键值对
+    for (int i = 0; i < bucket.size(); i++)
+    {
+        if (bucket[i]->key == key)
+        {
+            Pair *tmp = bucket[i];
+            bucket.erase(bucket.begin() + i); // 从中删除键值对
+            delete tmp; // 释放内存
+            size--;
         }
     }
 }
