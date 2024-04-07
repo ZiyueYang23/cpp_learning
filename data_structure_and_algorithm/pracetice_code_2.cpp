@@ -1229,3 +1229,87 @@
 
 //     PrintTree(node->left, level + 1);
 // }
+
+//@ 初探堆
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <queue>
+
+int main(void)
+{
+    // 创建优先队列
+    std::priority_queue<int> pq;
+
+    // 底层容器是 vector
+    // greater 与 less 是比较器 你想要大顶堆就对应 less ，想要小顶堆对应 greater
+    std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+    // 默认的是大顶堆
+    std::priority_queue<int, std::vector<int>, std::less<int>> max_heap;
+
+
+    pq.push(1);
+    pq.push(3);
+    pq.push(7);
+    pq.push(9);
+    pq.push(4);
+    pq.push(5);
+
+
+    min_heap.push(1);
+    min_heap.push(3);
+    min_heap.push(7);
+    min_heap.push(9);
+    min_heap.push(4);
+    min_heap.push(5);
+
+    max_heap.push(1);
+    max_heap.push(3);
+    max_heap.push(7);
+    max_heap.push(9);
+    max_heap.push(4);
+    max_heap.push(5);
+
+
+    // 由此可见优先队列默认的是大顶堆
+    std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
+
+    pq.pop();
+    std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
+    std::cout << "是否为空:" << pq.empty() << std::endl;
+
+
+
+    std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
+
+    min_heap.pop();
+    std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
+    std::cout << "是否为空:" << min_heap.empty() << std::endl;
+    
+    std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
+
+    max_heap.pop();
+    std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
+    std::cout << "是否为空:" << max_heap.empty() << std::endl;
+
+    // 也可以先创建一个底层容器vector，然后在用迭代器完成转化为堆
+    std::vector<int> input{1, 2, 3, 4, 7 ,8, 9, 5, 4, 3};
+    std::priority_queue<int> max_heap_1(input.begin(), input.end());
+
+    std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
+
+    max_heap_1.pop();
+    std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
+    std::cout << "是否为空:" << max_heap_1.empty() << std::endl;
+
+    std::make_heap(input.begin(), input.end(), std::greater<int>());
+    input.push_back(10);
+    std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
+    std::pop_heap(input.begin(), input.end());
+    input.pop_back();
+    std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
+    return 0;
+}
+
+
+
