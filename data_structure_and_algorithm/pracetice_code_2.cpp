@@ -1056,7 +1056,6 @@
 //     return GetHight(node->left) - GetHight(node->right);
 // }
 
-
 // TreeNode *AVLTree::RightRotate(TreeNode *node)
 // {
 
@@ -1230,86 +1229,321 @@
 //     PrintTree(node->left, level + 1);
 // }
 
-//@ 初探堆
-#include <algorithm>
-#include <iomanip>
+// //@ 初探堆
+// #include <algorithm>
+// #include <iomanip>
+// #include <iostream>
+// #include <queue>
+
+// int main(void)
+// {
+//     // 创建优先队列
+//     std::priority_queue<int> pq;
+
+//     // 底层容器是 vector
+//     // greater 与 less 是比较器 你想要大顶堆就对应 less ，想要小顶堆对应 greater
+//     std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+//     // 默认的是大顶堆
+//     std::priority_queue<int, std::vector<int>, std::less<int>> max_heap;
+
+//     pq.push(1);
+//     pq.push(3);
+//     pq.push(7);
+//     pq.push(9);
+//     pq.push(4);
+//     pq.push(5);
+
+//     min_heap.push(1);
+//     min_heap.push(3);
+//     min_heap.push(7);
+//     min_heap.push(9);
+//     min_heap.push(4);
+//     min_heap.push(5);
+
+//     max_heap.push(1);
+//     max_heap.push(3);
+//     max_heap.push(7);
+//     max_heap.push(9);
+//     max_heap.push(4);
+//     max_heap.push(5);
+
+//     // 由此可见优先队列默认的是大顶堆
+//     std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
+
+//     pq.pop();
+//     std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
+//     std::cout << "是否为空:" << pq.empty() << std::endl;
+
+//     std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
+
+//     min_heap.pop();
+//     std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
+//     std::cout << "是否为空:" << min_heap.empty() << std::endl;
+
+//     std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
+
+//     max_heap.pop();
+//     std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
+//     std::cout << "是否为空:" << max_heap.empty() << std::endl;
+
+//     // 也可以先创建一个底层容器vector，然后在用迭代器完成转化为堆
+//     std::vector<int> input{1, 2, 3, 4, 7 ,8, 9, 5, 4, 3};
+//     std::priority_queue<int> max_heap_1(input.begin(), input.end());
+
+//     std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
+
+//     max_heap_1.pop();
+//     std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
+//     std::cout << "是否为空:" << max_heap_1.empty() << std::endl;
+
+//     std::make_heap(input.begin(), input.end(), std::greater<int>());
+//     std::cout << "堆顶元素的值为:" <<max_heap_1.top()<<std::endl;
+//     input.push_back(10);
+//     std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
+//     std::pop_heap(input.begin(), input.end());
+
+//     input.pop_back();
+//     std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
+
+//     return 0;
+// }
+
+//@ 数组实现堆
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <algorithm>
+#include <stdexcept>
+#include <limits>
 
-int main(void)
+class HeapArray
 {
-    // 创建优先队列
-    std::priority_queue<int> pq;
+private:
+    std::vector<int> max_heap;
+    // 自堆底到堆顶实现筛选目的是维持大顶堆，sift是筛选
+    void SiftUp(int index);
+    // 返回三个数的最大值的索引
+    int MaxOFThreeIndex(int father_index);
+    // 自顶向下完成堆化
+    void SiftDown(int index);
 
-    // 底层容器是 vector
-    // greater 与 less 是比较器 你想要大顶堆就对应 less ，想要小顶堆对应 greater
-    std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
-    // 默认的是大顶堆
-    std::priority_queue<int, std::vector<int>, std::less<int>> max_heap;
+public:
+    // 返回左子节点索引
+    int LeftChildIndex(int father_index);
+    // 返回右子节点索引
+    int RightChildIndex(int father_index);
+    // 返回父节点索引
+    int FatherIndex(int child_index);
+    // 返回值
+    int At(int index);
+    // 插入元素
+    void Insert(int val);
+    // 弹出堆顶元素
+    void Pop();
+    // 堆大小
+    int Size();
+    // 按照树的层级进行打印
+    void PrintHeapShape();
+};
 
+int main()
+{
+    HeapArray heap; // 创建 HeapArray 对象
 
-    pq.push(1);
-    pq.push(3);
-    pq.push(7);
-    pq.push(9);
-    pq.push(4);
-    pq.push(5);
+    // 添加一些元素到堆中
+    heap.Insert(5);
+    heap.Insert(3);
+    heap.Insert(8);
+    heap.Insert(1);
+    heap.Insert(7);
+    heap.Insert(9);
+    heap.Insert(4);
+    heap.Insert(6);
 
+    // 输出堆中的元素（未排序）
+    std::cout << "堆中的元素：";
+    for (int i = 0; i < heap.Size(); ++i)
+    {
+        std::cout << heap.At(i) << " ";
+    }
+    std::cout << std::endl;
+    // 输出堆的形状
+    std::cout << "堆的形状：" << std::endl;
+    heap.PrintHeapShape();
+    // 自顶向下进行筛选
+    heap.Pop();
 
-    min_heap.push(1);
-    min_heap.push(3);
-    min_heap.push(7);
-    min_heap.push(9);
-    min_heap.push(4);
-    min_heap.push(5);
+    std::cout << std::endl;
+    // 输出堆中的元素（已排序）
+    std::cout << "弹出堆顶元素后的堆：";
+    for (int i = 0; i < heap.Size(); ++i)
+    {
+        std::cout << heap.At(i) << " ";
+    }
+    std::cout << std::endl;
+    // 输出堆的形状
+    std::cout << "堆的形状：" << std::endl;
+    heap.PrintHeapShape();
 
-    max_heap.push(1);
-    max_heap.push(3);
-    max_heap.push(7);
-    max_heap.push(9);
-    max_heap.push(4);
-    max_heap.push(5);
-
-
-    // 由此可见优先队列默认的是大顶堆
-    std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
-
-    pq.pop();
-    std::cout << "堆顶元素的值为:" << pq.top()<<std::endl;
-    std::cout << "是否为空:" << pq.empty() << std::endl;
-
-
-
-    std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
-
-    min_heap.pop();
-    std::cout << "堆顶元素的值为:" << min_heap.top()<<std::endl;
-    std::cout << "是否为空:" << min_heap.empty() << std::endl;
-    
-    std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
-
-    max_heap.pop();
-    std::cout << "堆顶元素的值为:" << max_heap.top()<<std::endl;
-    std::cout << "是否为空:" << max_heap.empty() << std::endl;
-
-    // 也可以先创建一个底层容器vector，然后在用迭代器完成转化为堆
-    std::vector<int> input{1, 2, 3, 4, 7 ,8, 9, 5, 4, 3};
-    std::priority_queue<int> max_heap_1(input.begin(), input.end());
-
-    std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
-
-    max_heap_1.pop();
-    std::cout << "堆顶元素的值为:" << max_heap_1.top()<<std::endl;
-    std::cout << "是否为空:" << max_heap_1.empty() << std::endl;
-
-    std::make_heap(input.begin(), input.end(), std::greater<int>());
-    input.push_back(10);
-    std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
-    std::pop_heap(input.begin(), input.end());
-    input.pop_back();
-    std::cout << "堆顶元素的值为:" << input.front()<<std::endl;
     return 0;
 }
 
+// HeapArray
+// pubilc:
+// 返回左子节点索引
+int HeapArray::LeftChildIndex(int father_index)
+{
+    return 2 * father_index + 1;
+}
+// 返回右子节点索引
+int HeapArray::RightChildIndex(int father_index)
+{
+    return 2 * father_index + 2;
+}
+// 返回父节点索引
+int HeapArray::FatherIndex(int child_index)
+{
+    // 非常巧妙的利用规则，不管是左子节点还是右子节点-1除2都是该父节点的索引
+    return (child_index - 1) / 2;
+}
+// 返回节点值
+int HeapArray::At(int index)
+{
+    return max_heap[index];
+}
+// 插入元素
+void HeapArray::Insert(int val)
+{
+    max_heap.push_back(val);
+    // 这个地方非常巧妙
+    SiftUp(max_heap.size() - 1);
+}
+// 弹出堆顶元素
+void HeapArray::Pop()
+{
+    if (max_heap.empty() == true)
+    {
+        throw std::out_of_range("堆为空");
+    }
+    std::swap(max_heap[0], max_heap[max_heap.size() - 1]);
+    max_heap.pop_back();
 
+    SiftDown(0);
+}
+// size
+int HeapArray::Size()
+{
+    return max_heap.size();
+}
 
+// private:
+// 自底向顶进行筛选
+void HeapArray::SiftUp(int index)
+{
+    while (1)
+    {
+        int father_index = FatherIndex(index);
+        if (max_heap[index] > max_heap[father_index])
+        {
+            std::swap(max_heap.at(index), max_heap.at(FatherIndex(index)));
+            index = father_index;
+        }
+        else if (index == 0 || max_heap[index] <= max_heap[father_index])
+        {
+            break;
+        }
+    }
+}
+// 返回小树中的最大值的索引
+int HeapArray::MaxOFThreeIndex(int father_index)
+{
+    int father_val = max_heap[father_index];
+    int size = max_heap.size();
+    int left_child_index = LeftChildIndex(father_index);
+    int right_child_index = RightChildIndex(father_index);
+
+    int left_child_val(0);
+    int right_child_val(0);
+
+    if (size - 1 >= left_child_index)
+    {
+        left_child_val = max_heap[left_child_index];
+    }
+    else if (size - 1 < left_child_index)
+    {
+        // 目的是给其一个最小值
+        // left_child_val = std::numeric_limits<int>::min();
+        left_child_val = INT_MIN;
+    }
+
+    if (size - 1 >= right_child_index)
+    {
+        right_child_val = max_heap[right_child_index];
+    }
+    else if (size - 1 < right_child_index)
+    {
+        right_child_val = std::numeric_limits<int>::min();
+    }
+
+    int max = max_heap[father_index];
+    max = max > left_child_val ? max : left_child_val;
+    max = max > right_child_val ? max : right_child_val;
+
+    if (max == father_val)
+    {
+        return father_index;
+    }
+    else if (max == left_child_val) {
+        return LeftChildIndex(father_index);
+    }
+    else
+    {
+        // (max == right_child_val)
+        return RightChildIndex(father_index);
+    }
+}
+
+// 自顶向下进行筛选
+void HeapArray::SiftDown(int index)
+{
+    while (1)
+    {
+        int max_index = MaxOFThreeIndex(index);
+        int size = max_heap.size();
+        if (max_index == index || index == size - 1)
+        {
+            break;
+        }
+        else
+        {
+            std::swap(max_heap.at(max_index), max_heap.at(index));
+            index = max_index;
+        }
+    }
+}
+// 按照层级打印heap
+// 用vim来编写代码
+void HeapArray::PrintHeapShape()
+{
+    int level = 0;
+    int levelNodes = 1;
+    int count = 0;
+
+    for (int i = 0; i < max_heap.size(); ++i)
+    {
+        if (count == 0)
+        {
+            std::cout << "Level " << level << ": ";
+        }
+
+        std::cout << max_heap[i] << " ";
+
+        ++count;
+        if (count == levelNodes)
+        {
+            std::cout << std::endl;
+            count = 0;
+            levelNodes *= 2;
+            ++level;
+        }
+    }
+}
