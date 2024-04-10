@@ -2136,46 +2136,46 @@ int main(void)
 
 #endif
 
-#include <iostream>
+// #include <iostream>
 
-class Point
-{
-private:
-    int x_;
-    int y_;
+// class Point
+// {
+// private:
+//     int x_;
+//     int y_;
 
-public:
-    Point(const Point &obj);
-    Point(int x = 0, int y = 0);
+// public:
+//     Point(const Point &obj);
+//     Point(int x = 0, int y = 0);
 
-    Point &operator=(const Point &obj);
-};
-
-
-Point::Point(int x, int y)
-    : x_(x), y_(y)
-{
-}
-
-Point &Point::operator=(const Point &obj)
-{
-    this->x_ = obj.x_;
-    this->y_ = obj.y_;
-
-    return *this;
-}
-Point::Point(const Point &obj)
-{
-    this->x_ = obj.x_;
-    this->y_ = obj.y_;
-}
+//     Point &operator=(const Point &obj);
+// };
 
 
-int main(void)
-{
-    Point a(3, 4);
-    Point b;
-    Point c(b);
+// Point::Point(int x, int y)
+//     : x_(x), y_(y)
+// {
+// }
 
-    b = c;
-}
+// Point &Point::operator=(const Point &obj)
+// {
+//     this->x_ = obj.x_;
+//     this->y_ = obj.y_;
+
+//     return *this;
+// }
+// Point::Point(const Point &obj)
+// {
+//     this->x_ = obj.x_;
+//     this->y_ = obj.y_;
+// }
+
+
+// int main(void)
+// {
+//     Point a(3, 4);
+//     Point b;
+//     Point c(b);
+
+//     b = c;
+// }

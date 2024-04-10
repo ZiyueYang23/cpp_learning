@@ -1230,6 +1230,8 @@
 // }
 
 // //@ 初探堆
+// //包含 <algorithm> 头文件时，通常会隐式包含 <functional> 头文件
+// //用greater和less时就需要包含头文件<functional>
 // #include <algorithm>
 // #include <iomanip>
 // #include <iostream>
@@ -1308,242 +1310,353 @@
 //     return 0;
 // }
 
-//@ 数组实现堆
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-#include <limits>
+// //@ 动态数组实现堆
 
-class HeapArray
-{
-private:
-    std::vector<int> max_heap;
-    // 自堆底到堆顶实现筛选目的是维持大顶堆，sift是筛选
-    void SiftUp(int index);
-    // 返回三个数的最大值的索引
-    int MaxOFThreeIndex(int father_index);
-    // 自顶向下完成堆化
-    void SiftDown(int index);
+// #include <iostream>
+// #include <vector>
+// #include <algorithm>
+// #include <stdexcept>
+// #include <limits>
 
-public:
-    // 返回左子节点索引
-    int LeftChildIndex(int father_index);
-    // 返回右子节点索引
-    int RightChildIndex(int father_index);
-    // 返回父节点索引
-    int FatherIndex(int child_index);
-    // 返回值
-    int At(int index);
-    // 插入元素
-    void Insert(int val);
-    // 弹出堆顶元素
-    void Pop();
-    // 堆大小
-    int Size();
-    // 按照树的层级进行打印
-    void PrintHeapShape();
-};
-
-int main()
-{
-    HeapArray heap; // 创建 HeapArray 对象
-
-    // 添加一些元素到堆中
-    heap.Insert(5);
-    heap.Insert(3);
-    heap.Insert(8);
-    heap.Insert(1);
-    heap.Insert(7);
-    heap.Insert(9);
-    heap.Insert(4);
-    heap.Insert(6);
-
-    // 输出堆中的元素（未排序）
-    std::cout << "堆中的元素：";
-    for (int i = 0; i < heap.Size(); ++i)
-    {
-        std::cout << heap.At(i) << " ";
-    }
-    std::cout << std::endl;
-    // 输出堆的形状
-    std::cout << "堆的形状：" << std::endl;
-    heap.PrintHeapShape();
-    // 自顶向下进行筛选
-    heap.Pop();
-
-    std::cout << std::endl;
-    // 输出堆中的元素（已排序）
-    std::cout << "弹出堆顶元素后的堆：";
-    for (int i = 0; i < heap.Size(); ++i)
-    {
-        std::cout << heap.At(i) << " ";
-    }
-    std::cout << std::endl;
-    // 输出堆的形状
-    std::cout << "堆的形状：" << std::endl;
-    heap.PrintHeapShape();
-
-    return 0;
-}
-
-// HeapArray
-// pubilc:
-// 返回左子节点索引
-int HeapArray::LeftChildIndex(int father_index)
-{
-    return 2 * father_index + 1;
-}
-// 返回右子节点索引
-int HeapArray::RightChildIndex(int father_index)
-{
-    return 2 * father_index + 2;
-}
-// 返回父节点索引
-int HeapArray::FatherIndex(int child_index)
-{
-    // 非常巧妙的利用规则，不管是左子节点还是右子节点-1除2都是该父节点的索引
-    return (child_index - 1) / 2;
-}
-// 返回节点值
-int HeapArray::At(int index)
-{
-    return max_heap[index];
-}
-// 插入元素
-void HeapArray::Insert(int val)
-{
-    max_heap.push_back(val);
-    // 这个地方非常巧妙
-    SiftUp(max_heap.size() - 1);
-}
-// 弹出堆顶元素
-void HeapArray::Pop()
-{
-    if (max_heap.empty() == true)
-    {
-        throw std::out_of_range("堆为空");
-    }
-    std::swap(max_heap[0], max_heap[max_heap.size() - 1]);
-    max_heap.pop_back();
-
-    SiftDown(0);
-}
-// size
-int HeapArray::Size()
-{
-    return max_heap.size();
-}
-
+// class MaxHeapVector
+// {
 // private:
-// 自底向顶进行筛选
-void HeapArray::SiftUp(int index)
-{
-    while (1)
-    {
-        int father_index = FatherIndex(index);
-        if (max_heap[index] > max_heap[father_index])
-        {
-            std::swap(max_heap.at(index), max_heap.at(FatherIndex(index)));
-            index = father_index;
-        }
-        else if (index == 0 || max_heap[index] <= max_heap[father_index])
-        {
-            break;
-        }
-    }
-}
-// 返回小树中的最大值的索引
-int HeapArray::MaxOFThreeIndex(int father_index)
-{
-    int father_val = max_heap[father_index];
-    int size = max_heap.size();
-    int left_child_index = LeftChildIndex(father_index);
-    int right_child_index = RightChildIndex(father_index);
+//     std::vector<int> max_heap;
+//     // 自堆底到堆顶实现筛选目的是维持大顶堆，sift是筛选
+//     void SiftUp(int index);
+//     // 返回三个数的最大值的索引
+//     int MaxOFThreeIndex(int father_index);
+//     // 自顶向下完成堆化
+//     void SiftDown(int index);
+//     // 获得左子节点的值，如果不存在就返回int的最小值
+//     int GetLeftChildVal(int left_child_index);
+//     // 获得右子节点的值，如果不存在就返回int的最小值
+//     int GetRightChildVal(int right_child_index);
 
-    int left_child_val(0);
-    int right_child_val(0);
+// public:
+//     // 默认构造函数
+//     MaxHeapVector() {}
+//     // 传一个数组进来完成堆化，时间复杂度O(n)非常好
+//     MaxHeapVector(std::vector<int> vector);
+//     // 返回左子节点索引
+//     int LeftChildIndex(int father_index);
+//     // 返回右子节点索引
+//     int RightChildIndex(int father_index);
+//     // 返回父节点索引
+//     int FatherIndex(int child_index);
+//     // 返回值
+//     int At(int index);
+//     // 插入元素
+//     void Insert(int val);
+//     // 弹出堆顶元素
+//     void Pop();
+//     // 堆大小
+//     int Size();
+//     // 按照树的层级进行打印
+//     void PrintHeapShape();
+// };
 
-    if (size - 1 >= left_child_index)
-    {
-        left_child_val = max_heap[left_child_index];
-    }
-    else if (size - 1 < left_child_index)
-    {
-        // 目的是给其一个最小值
-        // left_child_val = std::numeric_limits<int>::min();
-        left_child_val = INT_MIN;
-    }
+// int main()
+// {
+//     std::vector<int> temp = {11, 22, 43, 67, 39, 66, 99, 61, 55, 22};
+//     MaxHeapVector max_heap_0; // 创建 MaxHeapVector 对象
+//     MaxHeapVector max_heap_1(temp);
 
-    if (size - 1 >= right_child_index)
-    {
-        right_child_val = max_heap[right_child_index];
-    }
-    else if (size - 1 < right_child_index)
-    {
-        right_child_val = std::numeric_limits<int>::min();
-    }
+//     // 添加一些元素到堆中
+//     max_heap_0.Insert(5);
+//     max_heap_0.Insert(3);
+//     max_heap_0.Insert(8);
+//     max_heap_0.Insert(1);
+//     max_heap_0.Insert(7);
+//     max_heap_0.Insert(9);
+//     max_heap_0.Insert(4);
+//     max_heap_0.Insert(6);
 
-    int max = max_heap[father_index];
-    max = max > left_child_val ? max : left_child_val;
-    max = max > right_child_val ? max : right_child_val;
+//     // 输出堆中的元素（未排序）
+//     std::cout << "堆中的元素：";
+//     for (int i = 0; i < max_heap_0.Size(); ++i)
+//     {
+//         std::cout << max_heap_0.At(i) << " ";
+//     }
+//     std::cout << std::endl;
+//     // 输出堆的形状
+//     std::cout << "堆的形状：" << std::endl;
+//     max_heap_0.PrintHeapShape();
+//     // 自顶向下进行筛选
+//     max_heap_0.Pop();
 
-    if (max == father_val)
-    {
-        return father_index;
-    }
-    else if (max == left_child_val) {
-        return LeftChildIndex(father_index);
-    }
-    else
-    {
-        // (max == right_child_val)
-        return RightChildIndex(father_index);
-    }
-}
+//     std::cout << std::endl;
+//     // 输出堆中的元素（已排序）
+//     std::cout << "弹出堆顶元素后的堆：";
+//     for (int i = 0; i < max_heap_0.Size(); ++i)
+//     {
+//         std::cout << max_heap_0.At(i) << " ";
+//     }
+//     std::cout << std::endl;
+//     // 输出堆的形状
+//     std::cout << "堆的形状：" << std::endl;
+//     max_heap_0.PrintHeapShape();
 
-// 自顶向下进行筛选
-void HeapArray::SiftDown(int index)
-{
-    while (1)
-    {
-        int max_index = MaxOFThreeIndex(index);
-        int size = max_heap.size();
-        if (max_index == index || index == size - 1)
-        {
-            break;
-        }
-        else
-        {
-            std::swap(max_heap.at(max_index), max_heap.at(index));
-            index = max_index;
-        }
-    }
-}
-// 按照层级打印heap
-// 用vim来编写代码
-void HeapArray::PrintHeapShape()
-{
-    int level = 0;
-    int levelNodes = 1;
-    int count = 0;
+//     std::cout << std::endl;
+//     // 输出堆中的元素（已排序）
+//     std::cout << "2号堆：";
+//     for (int i = 0; i < max_heap_1.Size(); ++i)
+//     {
+//         std::cout << max_heap_1.At(i) << " ";
+//     }
+//     std::cout << std::endl;
+//     // 输出堆的形状
+//     std::cout << "堆的形状：" << std::endl;
+//     max_heap_1.PrintHeapShape();
 
-    for (int i = 0; i < max_heap.size(); ++i)
-    {
-        if (count == 0)
-        {
-            std::cout << "Level " << level << ": ";
-        }
+//     return 0;
+// }
 
-        std::cout << max_heap[i] << " ";
+// // MaxHeapVector
+// // pubilc:
+// // 返回左子节点索引
+// int MaxHeapVector::LeftChildIndex(int father_index)
+// {
+//     return 2 * father_index + 1;
+// }
+// // 返回右子节点索引
+// int MaxHeapVector::RightChildIndex(int father_index)
+// {
+//     return 2 * father_index + 2;
+// }
+// // 返回父节点索引
+// int MaxHeapVector::FatherIndex(int child_index)
+// {
+//     // 非常巧妙的利用规则，不管是左子节点还是右子节点-1除2都是该父节点的索引
+//     return (child_index - 1) / 2;
+// }
+// // 返回节点值
+// int MaxHeapVector::At(int index)
+// {
+//     return max_heap[index];
+// }
+// // 插入元素
+// void MaxHeapVector::Insert(int val)
+// {
+//     // 先进行尾插插入元素
+//     max_heap.push_back(val);
+//     // 再从底部至顶完成堆化
+//     SiftUp(max_heap.size() - 1);
+// }
+// // 弹出堆顶元素，自研算法
+// void MaxHeapVector::Pop()
+// {
+//     if (max_heap.empty() == true)
+//     {
+//         // 抛出异常信息
+//         throw std::out_of_range("堆为空");
+//     }
+//     // 直接用的自带的算法库的swap
+//     std::swap(max_heap[0], max_heap[max_heap.size() - 1]);
+//     // 把堆顶元素与最右叶节点交换，在进行尾删pop，完成对堆顶元素的删除。
+//     max_heap.pop_back();
+//     // 此后需要进行把换到堆顶的小元素完成自顶至底的堆化
+//     SiftDown(0);
+// }
+// // size
+// int MaxHeapVector::Size()
+// {
+//     // 直接用vector的接口size非常方便
+//     return max_heap.size();
+// }
+// // 按照层级打印heap gpt写的
+// void MaxHeapVector::PrintHeapShape()
+// {
+//     int level = 0;
+//     int levelNodes = 1;
+//     int count = 0;
 
-        ++count;
-        if (count == levelNodes)
-        {
-            std::cout << std::endl;
-            count = 0;
-            levelNodes *= 2;
-            ++level;
-        }
-    }
-}
+//     for (int i = 0; i < max_heap.size(); ++i)
+//     {
+//         if (count == 0)
+//         {
+//             std::cout << "Level " << level << ": ";
+//         }
+
+//         std::cout << max_heap[i] << " ";
+
+//         ++count;
+//         if (count == levelNodes)
+//         {
+//             std::cout << std::endl;
+//             count = 0;
+//             levelNodes *= 2;
+//             ++level;
+//         }
+//     }
+// }
+
+// // private:
+// // 自底向顶进行筛选
+// void MaxHeapVector::SiftUp(int index)
+// {
+//     while (1)
+//     {
+//         int father_index = FatherIndex(index);
+//         // 如果该节点的值大于其父节点的值则进行交换并且更新索引继续进入循环
+//         if (max_heap[index] > max_heap[father_index])
+//         {
+//             std::swap(max_heap.at(index), max_heap.at(FatherIndex(index)));
+//             index = father_index;
+//         }
+//         // 循环停止的条件就是该节点到达了根节点，或者该节点小于等于其子节点不需要再进行交换
+//         else if (index == 0 || max_heap[index] <= max_heap[father_index])
+//         {
+//             return;
+//         }
+//     }
+// }
+// // 获得左子节点的值如果不存在则返回int类型最小值
+// int MaxHeapVector::GetLeftChildVal(int left_child_index)
+// {
+//     int size = max_heap.size();
+
+//     if (size - 1 >= left_child_index)
+//     {
+//         return max_heap[left_child_index];
+//     }
+//     else
+//     {
+//         //(size - 1 < left_child_index)
+//         // 目的是给其一个最小值
+//         // left_child_val = std::numeric_limits<int>::min();
+//         return INT_MIN;
+//     }
+// }
+// // 获得右子节点的值如果不存在则返回int类型最小值
+// int MaxHeapVector::GetRightChildVal(int right_child_index)
+// {
+//     int size = max_heap.size();
+
+//     if (size - 1 >= right_child_index)
+//     {
+//         return max_heap[right_child_index];
+//     }
+//     else
+//     {
+//         //(size - 1 < right_child_index)
+//         return std::numeric_limits<int>::min();
+//     }
+// }
+// // 返回小树中的最大值的索引
+// // 自研算法
+// int MaxHeapVector::MaxOFThreeIndex(int father_index)
+// {
+//     // 获得父节点的值
+//     int father_val = max_heap[father_index];
+//     // 获得size
+//     int size = max_heap.size();
+//     // 左子节点的索引
+//     int left_child_index = LeftChildIndex(father_index);
+//     // 右子节点的索引
+//     int right_child_index = RightChildIndex(father_index);
+//     // 目的是判断一下左右子节点是否存在，如果存在就正常赋值，如果不存在就给其一个很小的值
+//     // 左子节点的值
+//     int left_child_val = GetLeftChildVal(left_child_index);
+//     // 右子节点的值
+//     int right_child_val = GetLeftChildVal(right_child_index);
+
+//     // 判断最大值算法，先假设父节点的值为最大值，再分别于左子节点和右子节点进行比较
+//     // 第一次比出左子节点和父节点中的最大值
+//     // 第二次比出左子节点和父节点中的最大值与右子节点比较，此时确保了max中存放了拥有最大节点的值
+//     // 如果子节点不存在则直接给一个int类型的负最小值，只需比出最大值即可，就不需要考虑到底有几个子节点存在。
+//     int max = max_heap[father_index];
+//     max = max > left_child_val ? max : left_child_val;
+//     max = max > right_child_val ? max : right_child_val;
+
+//     if (max == father_val)
+//     {
+//         return father_index;
+//     }
+//     else if (max == left_child_val)
+//     {
+//         return LeftChildIndex(father_index);
+//     }
+//     else
+//     {
+//         // (max == right_child_val)
+//         return RightChildIndex(father_index);
+//     }
+// }
+// // 自顶向下进行筛选
+// void MaxHeapVector::SiftDown(int index)
+// {
+//     while (1)
+//     {
+//         int max_index = MaxOFThreeIndex(index);
+//         int size = max_heap.size();
+//         if (max_index == index || index == size - 1)
+//         {
+//             return;
+//         }
+//         else
+//         {
+//             std::swap(max_heap.at(max_index), max_heap.at(index));
+//             index = max_index;
+//         }
+//     }
+// }
+
+// MaxHeapVector::MaxHeapVector(std::vector<int> vector)
+// {
+//     this->max_heap = vector;
+//     for (int i = max_heap.size() - 1; i >= 0; i--)
+//     {
+//         SiftDown(i);
+//     }
+// }
+
+// #include <iostream>
+// #include <vector>
+// #include <queue>
+// // 用greater和less需要包含头文件functional
+// #include <functional>
+
+// // 声明 TopKMInHeap 函数
+// std::priority_queue<int, std::vector<int>, std::greater<int>> TopKMInHeap(std::vector<int> &nums, int k);
+
+// int main()
+// {
+//     std::vector<int> nums = {5, 3, 8, 1, 7, 9, 4, 6};
+//     int k = 3;
+
+//     std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap = TopKMInHeap(nums, k);
+
+//     std::cout << "前" << k << "个最大元素为：";
+//     while (!min_heap.empty())
+//     {
+//         std::cout << min_heap.top() << " ";
+//         min_heap.pop();
+//     }
+//     std::cout << std::endl;
+
+//     return 0;
+// }
+
+// // 定义 TopKMInHeap 函数
+// std::priority_queue<int, std::vector<int>, std::greater<int>> TopKMInHeap(std::vector<int> &nums, int k)
+// {
+//     // 为何要采用小顶堆是非常巧妙的，最小的元素永远是放在堆顶，此时正好有接口top可以访问，并且可以用pop弹出，相当容易。
+//     // 如果是大顶堆，首先最小值就不好找，不一定在最后面
+//     std::priority_queue<int, std::vector<int>, std::greater<int>> min_heap;
+//     // 前k个元素入堆
+//     for (int i = 0; i < k; i++)
+//     {
+//         min_heap.push(nums[i]);
+//     }
+//     // 后面的元素一一与堆顶最小值对比，如果大于最小值则堆顶弹出，大值插入，如果是小于则下一个元素。
+//     for (int i = k; i < nums.size(); i++)
+//     {
+//         if (nums[i] > min_heap.top())
+//         {
+//             min_heap.pop();
+//             min_heap.push(nums[i]);
+//         }
+//     }
+//     return min_heap;
+// }
