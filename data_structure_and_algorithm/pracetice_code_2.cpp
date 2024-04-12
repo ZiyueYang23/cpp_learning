@@ -1660,3 +1660,62 @@
 //     }
 //     return min_heap;
 // }
+#include <iostream>
+#include <algorithm>
+#include <vector>
+int main(void)
+{
+    std::vector<int> vec = {1, 2, 3, 4, 4, 4, 5, 5, 6, 7, 8, 7, 7, 6, 4, 9};
+    // 在使用unique时需要注意一定是容器中的数据已经完成排序
+    // 快排默认是小到大，可以传一个cmp函数进去完成大到小，或者用reverse翻转函数完成大到小。
+    std::sort(vec.begin(), vec.end());
+    for (int i : vec)
+    {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+    std::reverse(vec.begin(), vec.end());
+    for (int num : vec)
+    {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+    // 倒着排序也没有问题，unique同样把重复元素移动到容器末尾
+    auto new_end = std::unique(vec.begin(), vec.end());
+
+    for (int j : vec)
+    {
+        std::cout << j << " ";
+    }
+    std::cout << std::endl;
+    // 迭代器是左闭右开的
+    // 这是函数返回的下标，直接用返回地址减去首地址输出下标
+    // 由于迭代器是左闭右开的因此返回的索引是出现的是去重元素后第一个重复的值的下标
+    std::cout << "first repeat ele index :>" << new_end - vec.begin();
+
+    std::cout << std::endl;
+    // 完成排序完成查重完成删除，三个函数辅助完成去重功能。
+    // 改了字体使用vim感觉挺不错的。
+    vec.erase(new_end, vec.end());
+    for (int k : vec)
+    {
+        std::cout << k << " ";
+    }
+    std::cout << std::endl;
+    std::sort(vec.begin(), vec.end());
+    for (int k : vec)
+    {
+        std::cout << k << " ";
+    }
+    std::cout << std::endl;
+    // 查找第一个大于等于的1的元素，返回值是该元素的地址，同样可以-begin()得出返回的下标
+    int value = 1;
+    auto index = std::lower_bound(vec.begin(), vec.end(), value) - vec.begin();
+    std::cout << "value :> " << index << std::endl;
+    // 若没有找到第一个x
+    int value_1 = 100;
+    auto index_1 = std::lower_bound(vec.begin(), vec.end(), value_1) - vec.begin();
+    std::cout << "value :> " << index_1 << std::endl;
+
+    return 0;
+}
