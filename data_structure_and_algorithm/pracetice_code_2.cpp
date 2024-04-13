@@ -1660,62 +1660,218 @@
 //     }
 //     return min_heap;
 // }
+// #include <iostream>
+// #include <algorithm>
+// #include <vector>
+// int main(void)
+// {
+//     std::vector<int> vec = {1, 2, 3, 4, 4, 4, 5, 5, 6, 7, 8, 7, 7, 6, 4, 9};
+//     // 在使用unique时需要注意一定是容器中的数据已经完成排序
+//     // 快排默认是小到大，可以传一个cmp函数进去完成大到小，或者用reverse翻转函数完成大到小。
+//     std::sort(vec.begin(), vec.end());
+//     for (int i : vec)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     std::reverse(vec.begin(), vec.end());
+//     for (int num : vec)
+//     {
+//         std::cout << num << " ";
+//     }
+//     std::cout << std::endl;
+//     // 倒着排序也没有问题，unique同样把重复元素移动到容器末尾
+//     auto new_end = std::unique(vec.begin(), vec.end());
+
+//     for (int j : vec)
+//     {
+//         std::cout << j << " ";
+//     }
+//     std::cout << std::endl;
+//     // 迭代器是左闭右开的
+//     // 这是函数返回的下标，直接用返回地址减去首地址输出下标
+//     // 由于迭代器是左闭右开的因此返回的索引是出现的是去重元素后第一个重复的值的下标
+//     std::cout << "first repeat ele index :>" << new_end - vec.begin();
+
+//     std::cout << std::endl;
+//     // 完成排序完成查重完成删除，三个函数辅助完成去重功能。
+//     // 改了字体使用vim感觉挺不错的。
+//     vec.erase(new_end, vec.end());
+//     for (int k : vec)
+//     {
+//         std::cout << k << " ";
+//     }
+//     std::cout << std::endl;
+//     std::sort(vec.begin(), vec.end());
+//     for (int k : vec)
+//     {
+//         std::cout << k << " ";
+//     }
+//     std::cout << std::endl;
+//     // 查找第一个大于等于的1的元素，返回值是该元素的地址，同样可以-begin()得出返回的下标
+//     int value = 1;
+//     auto index = std::lower_bound(vec.begin(), vec.end(), value) - vec.begin();
+//     std::cout << "value :> " << index << std::endl;
+//     // 若没有找到第一个x
+//     int value_1 = 100;
+//     auto index_1 = std::lower_bound(vec.begin(), vec.end(), value_1) - vec.begin();
+//     std::cout << "value :> " << index_1 << std::endl;
+
+//     return 0;
+// }
+// #include <iostream>
+// #include <string>
+
+// int main(void)
+// {
+//     std::string str_0;
+//     str_0 = "abcdefghijklmn";
+//     std::string str_1("asdfjlsadkjfalksd");
+//     std::string str_2 = {'a', 'b', 'c', 'd'};
+//     std::string str_3(str_0);
+//     std::string str_4 = str_1;
+//     std::string &str_5 = str_2;
+
+//     for (int i = 0; i < str_0.size(); i++)
+//     {
+//         std::cout << str_0[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto i = str_1.begin(); i != str_1.end(); i++)
+//     {
+//         std::cout << *i << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto i : str_2)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto i : str_3)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto &i : str_4)
+//     {
+//         i++;
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     // 在字符串末尾添加字符串
+//     str_2.append("efgh");
+//     str_2 += "ijk";
+
+//     for (int i(0); i < str_2.size(); i++)
+//     {
+//         str_2[i]++;
+//         std::cout << str_5[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     str_5 = str_1 + str_0;
+//     // 加法运算符完成了重载。
+//     for (int i(0); i < str_2.size(); i++)
+//     {
+//         std::cout << str_5[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     // 从下标位置插入新字符串 or str
+//     str_2.insert(4, "aaaaaaaaaa");
+//     for (int i(0); i < str_2.size(); i++)
+//     {
+//         std::cout << str_5[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     // 从pos索引处开始清楚长度为n的字符，注意不是字符串，如上面的“aaa……”字符串长度是11但是insert进去的是10个a最后一个是空格需要注意。
+//     str_2.erase(4, 10);
+
+//     for (int i(0); i < str_2.size(); i++)
+//     {
+//         std::cout << str_5[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     // 从下标pos开始到，替换指定长度n1，为另一个字符串s
+//     // 需要注意的是如果s只有“ab”两个元素它会去掉asdf然后直接就是ad
+//     // 如果s的长度超过了n1“aaaaaaaaa”，它会去掉asdf然后把整个aaa……都加进去这就有可能造成越界访问会出问题谨慎使用。
+//     str_2.replace(0, 4, "abcd");
+
+//     for (int i(0); i < str_2.size(); i++)
+//     {
+//         std::cout << str_5[i] << " ";
+//     }
+//     std::cout << std::endl;
+//     // 从下标pos开始，提取n个元素，返回值为新的字串，突然发现字符串可以直接打印，前面还遍历半天难绷。
+//     std::cout << str_2.substr(0, 5);
+//     // 预留字符串的存储空间函数，减少动态内存的分配次数
+//     str_2.reserve(100);
+//     std::cout << std::endl;
+//     // 倒序遍历，rbegin是最后一个元素的地址，rend是第一个元素前面的那个元素的地址，类似于end是指向最后一个元素的后面的那个元素的地址，迭代器左闭右开。
+//     for (auto i = str_1.rbegin(); i != str_1.rend(); i++)
+//     {
+//         std::cout << *i << " ";
+//     }
+//     return 0;
+// }
+// #include <iostream>
+// #include <set>
+// #include <vector>
+// // 用greater和less比较器需要包含头文件
+// #include <functional>
+// bool MyCmp(int a, int b)
+// {
+//     return a > b;
+// }
+// int main(void)
+// {
+
+//     std::set<int> s_0;
+//     s_0 = {1, 2, 3, 3, 5, 3, 5, 65, 7, 8, 6, 45, 10};
+//     std::set<int> s_1{1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     std::set<int> s_2(s_1);
+//     std::vector<int> vec{1, 2, 3, 4, 5};
+//     // 大到小，由于底层实现是红黑树因此不能直接用传vector进去作为底层容器，用迭代器完成赋值
+//     std::set<int, std::greater<int>> m_s_3(vec.begin(), vec.end());
+//     // 默认的是less即从小到大，底层实现是红黑树
+//     std::set<int, std::less<int>>m_s_4(s_1);
+//     // 这里首先是自定义了一个比较函数，而不使用库函数，这里告诉了函数指针的类型，后面括号里面直接把函数名传进去作为函数指针。
+//     // 再讲讲decltype 类似与auto，括号里面给参数，会自动给出括号里面的类型加上*就是函数指针。
+//     std::set<int, decltype(MyCmp) *> m_s_5(MyCmp);
+//     m_s_5.insert(10);
+//     m_s_5.insert(19);
+//     m_s_5.insert(12);
+//     m_s_5.insert(13);
+//     m_s_5.insert(14);
+//     m_s_5.insert(2);
+//     // 也可以一次性插入多个元素
+//     m_s_5.insert({1, 23, 3, 45, 43, 3});
+//     for(auto i:m_s_5)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto i : m_s_3)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     for (auto i : m_s_4)
+//     {
+//         std::cout << i << " ";
+//     }
+//     std::cout << std::endl;
+//     // 删除元素如果没有这个元素也不会出错，函数的返回值只有1或者0如果删除成功返回1，如果没有这个元素则会返回0
+//     m_s_5.erase(4);
+//     // 返回值是迭代器如果找到则指向该元素，如果没找到返回.end（）
+//     auto it = m_s_5.find(4);
+//     // 常量迭代器常见与遍历的时候
+//     auto kIt = m_s_5.cbegin();
+//     return 0;
+//  }
+
 #include <iostream>
-#include <algorithm>
-#include <vector>
+#include <map>
+
 int main(void)
 {
-    std::vector<int> vec = {1, 2, 3, 4, 4, 4, 5, 5, 6, 7, 8, 7, 7, 6, 4, 9};
-    // 在使用unique时需要注意一定是容器中的数据已经完成排序
-    // 快排默认是小到大，可以传一个cmp函数进去完成大到小，或者用reverse翻转函数完成大到小。
-    std::sort(vec.begin(), vec.end());
-    for (int i : vec)
-    {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
-    std::reverse(vec.begin(), vec.end());
-    for (int num : vec)
-    {
-        std::cout << num << " ";
-    }
-    std::cout << std::endl;
-    // 倒着排序也没有问题，unique同样把重复元素移动到容器末尾
-    auto new_end = std::unique(vec.begin(), vec.end());
-
-    for (int j : vec)
-    {
-        std::cout << j << " ";
-    }
-    std::cout << std::endl;
-    // 迭代器是左闭右开的
-    // 这是函数返回的下标，直接用返回地址减去首地址输出下标
-    // 由于迭代器是左闭右开的因此返回的索引是出现的是去重元素后第一个重复的值的下标
-    std::cout << "first repeat ele index :>" << new_end - vec.begin();
-
-    std::cout << std::endl;
-    // 完成排序完成查重完成删除，三个函数辅助完成去重功能。
-    // 改了字体使用vim感觉挺不错的。
-    vec.erase(new_end, vec.end());
-    for (int k : vec)
-    {
-        std::cout << k << " ";
-    }
-    std::cout << std::endl;
-    std::sort(vec.begin(), vec.end());
-    for (int k : vec)
-    {
-        std::cout << k << " ";
-    }
-    std::cout << std::endl;
-    // 查找第一个大于等于的1的元素，返回值是该元素的地址，同样可以-begin()得出返回的下标
-    int value = 1;
-    auto index = std::lower_bound(vec.begin(), vec.end(), value) - vec.begin();
-    std::cout << "value :> " << index << std::endl;
-    // 若没有找到第一个x
-    int value_1 = 100;
-    auto index_1 = std::lower_bound(vec.begin(), vec.end(), value_1) - vec.begin();
-    std::cout << "value :> " << index_1 << std::endl;
-
     return 0;
 }
