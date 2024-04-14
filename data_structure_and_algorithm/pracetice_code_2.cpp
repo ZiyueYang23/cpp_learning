@@ -1868,10 +1868,52 @@
 //     return 0;
 //  }
 
-#include <iostream>
-#include <map>
+// #include <iostream>
+// #include <map>
+// #include <string>
+// #include <vector>
+// #include <iomanip>
+// #include <unordered_map>
 
-int main(void)
-{
-    return 0;
-}
+// int main(void)
+// {
+//     std::map<int, std::string> m_i_s_0{{1, "a"}, {2, "b"}, {3, "c"}};
+//     std::map<int, std::string> m_i_s_1(m_i_s_0);
+//     std::vector<std::pair<int, std::string>> v_pairs{{1, "c"}, {2, "b"}, {3, "a"}};
+//     std::map<int, std::string> m_i_s_2(v_pairs.begin(), v_pairs.end());
+//     std::unordered_map<int, std::string> u_m_i_s(v_pairs.begin(), v_pairs.end());
+//     m_i_s_2.emplace(8, "dsalfkasdj");
+//     m_i_s_2.insert({{99, "SADTGSAFD"}, {666, "sfdgdsfg"}, {7777, "asdfgsdafgh"}});
+//     // 如果是找到了就会返回值，at里面传入的是键。
+//     std::string s = m_i_s_2.at(8);
+//     // 如果没找到就会抛出问题std::out of range
+//     // std::string ss = m_i_s_2.at(88888);
+//     // std::cout << s << ss << std::endl;
+//     auto it_0 = m_i_s_2.find(3);
+//     // 输出的地方需要注意，*it是指向这个pair的，没法直接输出pair，需要.first和.second
+//     std::cout << (*it_0).first << (*it_0).second << std::endl;
+//     m_i_s_2.erase(3);
+//     auto it_1 = m_i_s_2.find(3);
+//     if (it_1 == m_i_s_2.end())
+//     {
+//         std::cout << "yes!" << std::endl;
+//     }
+//     // 如果find找到了对应的key则会返回指向该元素的指针，如果没找到就会返回.end()
+//     // std::cout << (*it_1).first << (*it_1).second << std::endl;
+//     // count函数会返回key的元素的数量，因为在map中是没有重复元素的，每个key对应一个val如果说你想重复插入它会更新key对应的键的值而不是创建新的。
+//     std::cout << m_i_s_2.count(1) << std::endl;
+//     // 此时没有3了返回值为0
+//     std::cout << m_i_s_2.count(3) << std::endl;
+//     // 注意到map是使用红黑树实现的，自平衡的二叉搜索树与AVL树类似，它内部数据是有序的，遍历打印出的结果是有序的
+//     for (auto pair : m_i_s_2)
+//     {
+//         std::cout << std::setw(4) << pair.first << "  " << pair.second << std::endl;
+//     }
+//     // unordered_map是使用哈希表实现的，内部存储数据时无序的具有更高的查找和插入的性能
+//     for(auto pair:u_m_i_s)
+//     {
+//         std::cout << std::setw(4) << pair.first << " " << pair.second << std::endl;
+//     }
+
+//     return 0;
+// }
