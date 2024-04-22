@@ -5,16 +5,35 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+struct ListNode
+{
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
 using namespace std;
-class Solution {
+class Solution
+{
 public:
-    int fourSumCount(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3, vector<int>& nums4) 
+    ListNode *detectCycle(ListNode *head)
     {
-        int size1(nums1.size());
-        int size2(nums2.size());
-        int size3(nums3.size());
-        int size4(nums4.size());
-        int count(0);
-        
-    }
+        if(head==nullptr||head->next==nullptr)
+        {
+            return nullptr;
+        }
+        unordered_map<ListNode* ,int> um;
+        while(head!=nullptr)
+        {
+            if(um[head]==0)
+            {
+                um[head]++;
+            }
+            else
+            {
+                return head;
+            }
+            head = head->next;
+        }
+        return nullptr;
+        }
 };

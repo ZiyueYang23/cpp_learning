@@ -1917,3 +1917,173 @@
 
 //     return 0;
 // }
+
+// //@ 数组模板求最大值，每年期末考试都会考一体
+// #include <iostream>
+// #include <algorithm>
+// #include <map>
+
+// template <typename ValType>
+// ValType Max(ValType *array,int size)
+// {
+//     ValType max_ele = array[0];
+//     for (int i(0); i < size;i++)
+//     {
+//         max_ele = max_ele > array[i] ? max_ele : array[i];
+//     }
+// }
+
+// int main(void)
+// {
+//     return 0;
+// }
+//@ 二分查找未完成没写完
+// #include <iostream>
+// #include <vector>
+// #include <algorithm>
+
+// template <class VectorValType>
+// class BinarySearch
+// {
+// private:
+//     std::vector<VectorValType> vector_;
+//     int flag_=0;
+
+// public:
+//     BinarySearch(std::vector<VectorValType> &vector);
+//     VectorValType BinarySearchLeftRightClosed(VectorValType tagert);
+//     bool IsSorted();
+//     void Biggersort();
+// };
+
+// int main(void)
+// {
+//     std::vector<int> text_vector{-5, -1, 0, 1, 3, 2, 4, 5, 6, 7, 8};
+//     std::sort(text_vector.begin(), text_vector.end());
+//     BinarySearch<int> text_0(text_vector);
+//     std::cout << text_0.BinarySearchLeftRightClosed(4) << std::endl;
+//     return 0;
+// }
+
+// template <typename VectorValType>
+// VectorValType BinarySearch<VectorValType>::BinarySearchLeftRightClosed(VectorValType target)
+// {
+//     int left_index(0);
+//     int right_index(vector_.size() - 1);
+
+//     while (left_index <= right_index)
+//     {
+//         // 这个地方非常巧妙的能够避免越界而且还使用了右移运算符>>1这种位运算符直接进行操作，非常高效。
+//         int middle(left_index + ((right_index - left_index) >> 1));
+//         if (vector_[middle] == target)
+//         {
+//             return middle;
+//         }
+//         else if (vector_[middle] < target)
+//         {
+//             left_index = middle + 1;
+//         }
+//         else
+//         {
+//             // vector_[middle]>target
+//             right_index = middle - 1;
+//         }
+//     }
+
+//     return -1;
+// }
+// template <typename VectorValType>
+// BinarySearch<VectorValType>::BinarySearch(std::vector<VectorValType> &vector) : vector_(vector)
+// {
+//     flag_= IsSorted();
+//     if(flag_==true)
+//     {
+//         std::cout << "This vector is sorted!";
+//     }
+// }
+
+// template <typename VectorValType>
+// bool BinarySearch<VectorValType>::IsSorted()
+// {
+//     int flag(0);
+//     int size(vector_.size());
+//     for (int i(0); i < size; i++)
+//     {
+//         if (vector_[i] > vector_[i + 1])
+//         {
+//             flag = 1;
+//             return false;
+//         }
+//     }
+
+//     return true;
+// }
+
+// 这是单例模式的演示代码
+
+#include <iostream>
+
+using namespace std;
+
+class SingleInstance
+{
+private:
+    SingleInstance();
+    SingleInstance(const SingleInstance &obj);
+    static SingleInstance *p_single_instance;
+
+public:
+    static SingleInstance *GetSingleInstance();
+    ~SingleInstance();
+    int num_;
+};
+SingleInstance *SingleInstance::p_single_instance = NULL;
+
+int main(void)
+{
+    // 显示不可访问
+    // SingleInstance a;
+
+    // 输出三个地址都是一样的
+
+    SingleInstance *p_single_class_1 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_1 << endl;
+    cout << p_single_class_1->num_ << endl;
+
+    SingleInstance *p_single_class_2 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_2 << endl;
+    p_single_class_1->num_ = 15;
+
+    SingleInstance *p_single_class_3 = SingleInstance::GetSingleInstance();
+    cout << hex << p_single_class_3 << endl;
+    cout << p_single_class_1->num_ << endl;
+
+    return 0;
+}
+
+// 输出结果：
+// 0xda2600
+// 0
+// 0xda2600
+// 0xda2600
+// f
+
+// private
+SingleInstance::SingleInstance()
+{
+    num_ = 0;
+}
+// public
+SingleInstance *SingleInstance::GetSingleInstance()
+{
+    if (p_single_instance == NULL)
+    {
+        p_single_instance = new SingleInstance;
+    }
+
+    return p_single_instance;
+}
+
+SingleInstance::~SingleInstance()
+{
+}
