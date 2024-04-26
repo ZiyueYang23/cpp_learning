@@ -1937,7 +1937,7 @@
 // {
 //     return 0;
 // }
-//@ 二分查找未完成没写完
+// //@ 二分查找未完成没写完
 // #include <iostream>
 // #include <vector>
 // #include <algorithm>
@@ -1947,24 +1947,39 @@
 // {
 // private:
 //     std::vector<VectorValType> vector_;
-//     int flag_=0;
+//     int flag_ = 0;
 
 // public:
+//     // 二分查找
 //     BinarySearch(std::vector<VectorValType> &vector);
+//     // 左闭右闭
 //     VectorValType BinarySearchLeftRightClosed(VectorValType tagert);
+//     // 判断是否排过序
 //     bool IsSorted();
-//     void Biggersort();
+//     // print
+//     void Print();
 // };
 
 // int main(void)
 // {
-//     std::vector<int> text_vector{-5, -1, 0, 1, 3, 2, 4, 5, 6, 7, 8};
+//     std::vector<int> text_vector{-5, -1, 1, 3, 4, 5, 8, 10, 11, 2, 4, 5, 6, 7, 8};
 //     std::sort(text_vector.begin(), text_vector.end());
 //     BinarySearch<int> text_0(text_vector);
+//     BinarySearch<int> text_1(text_vector);
 //     std::cout << text_0.BinarySearchLeftRightClosed(4) << std::endl;
+//     text_0.Print();
 //     return 0;
 // }
 
+// template <typename VectorValType>
+// BinarySearch<VectorValType>::BinarySearch(std::vector<VectorValType> &vector) : vector_(vector)
+// {
+//     flag_ = IsSorted();
+//     if (flag_ == true)
+//     {
+//         std::cout << "This vector is sorted!";
+//     }
+// }
 // template <typename VectorValType>
 // VectorValType BinarySearch<VectorValType>::BinarySearchLeftRightClosed(VectorValType target)
 // {
@@ -1992,26 +2007,15 @@
 
 //     return -1;
 // }
-// template <typename VectorValType>
-// BinarySearch<VectorValType>::BinarySearch(std::vector<VectorValType> &vector) : vector_(vector)
-// {
-//     flag_= IsSorted();
-//     if(flag_==true)
-//     {
-//         std::cout << "This vector is sorted!";
-//     }
-// }
 
 // template <typename VectorValType>
 // bool BinarySearch<VectorValType>::IsSorted()
 // {
-//     int flag(0);
 //     int size(vector_.size());
 //     for (int i(0); i < size; i++)
 //     {
 //         if (vector_[i] > vector_[i + 1])
 //         {
-//             flag = 1;
 //             return false;
 //         }
 //     }
@@ -2019,71 +2023,183 @@
 //     return true;
 // }
 
-// 这是单例模式的演示代码
+// template <typename VectorValType>
+// void BinarySearch<VectorValType>::Print()
+// {
+//     for (auto i : vector_)
+//     {
+//         std::cout << i << " ";
+//     }
+// }
+// // 这是单例模式的演示代码
+
+// #include <iostream>
+
+// using namespace std;
+
+// class SingleInstance
+// {
+// private:
+//     SingleInstance();
+//     SingleInstance(const SingleInstance &obj);
+
+//     static SingleInstance *p_single_instance;
+
+// public:
+//     static SingleInstance *GetSingleInstance();
+//     ~SingleInstance();
+//     int num_;
+// };
+// SingleInstance *SingleInstance::p_single_instance = NULL;
+
+// int main(void)
+// {
+//     // 显示不可访问
+//     // SingleInstance a;
+
+//     // 输出三个地址都是一样的
+
+//     SingleInstance *p_single_class_1 = SingleInstance::GetSingleInstance();
+//     cout << hex << p_single_class_1 << endl;
+//     cout << p_single_class_1->num_ << endl;
+
+//     SingleInstance *p_single_class_2 = SingleInstance::GetSingleInstance();
+//     cout << hex << p_single_class_2 << endl;
+//     p_single_class_1->num_ = 15;
+
+//     SingleInstance *p_single_class_3 = SingleInstance::GetSingleInstance();
+//     cout << hex << p_single_class_3 << endl;
+//     cout << p_single_class_1->num_ << endl;
+
+//     return 0;
+// }
+
+// // 输出结果：
+// // 0xda2600
+// // 0
+// // 0xda2600
+// // 0xda2600
+// // f
+
+// // private
+// SingleInstance::SingleInstance()
+// {
+//     num_ = 0;
+// }
+// // public
+// SingleInstance *SingleInstance::GetSingleInstance()
+// {
+//     if (p_single_instance == NULL)
+//     {
+//         p_single_instance = new SingleInstance;
+//     }
+
+//     return p_single_instance;
+// }
+
+// SingleInstance::~SingleInstance()
+// {
+// }
+// // 水仙花数
+// #include <iostream>
+// int main(void)
+// {
+//     int num(0);
+//     int sum(0);
+//     std::cin >> num;
+//     int tmp = num;
+//     while (num != 0)
+//     {
+//         int temp = num % 10;
+//         sum += (temp * temp * temp);
+//         num = num / 10;
+//     }
+
+//     if (tmp == sum)
+//     {
+//         std::cout << "yes";
+//     }
+//     return 0;
+// }
+
 
 #include <iostream>
 
-using namespace std;
+int main() {
+    int length;
+    std::cout << "请输入菱形的边长：";
+    std::cin >> length;
 
-class SingleInstance
-{
-private:
-    SingleInstance();
-    SingleInstance(const SingleInstance &obj);
-    static SingleInstance *p_single_instance;
+    // 打印上半部分
+    for (int i = 0; i < length; i++) {
+        // 打印左半部分空格
+        for (int j = 0; j < length - i - 1; j++) {
+            std::cout << "*";
+        }
+        // 打印左半部分星号
+        for (int j = 0; j < i * 2 + 1; j++) {
+            if (j == 0 || j == i * 2) {
+                std::cout << "*";
+            } else {
+                std::cout << " ";
+            }
+        }
+        // 打印右半部分星号
+        for (int j = 0; j < length - i - 1; j++) {
+            std::cout << "*";
+        }
+        std::cout << std::endl;
+    }
 
-public:
-    static SingleInstance *GetSingleInstance();
-    ~SingleInstance();
-    int num_;
-};
-SingleInstance *SingleInstance::p_single_instance = NULL;
-
-int main(void)
-{
-    // 显示不可访问
-    // SingleInstance a;
-
-    // 输出三个地址都是一样的
-
-    SingleInstance *p_single_class_1 = SingleInstance::GetSingleInstance();
-    cout << hex << p_single_class_1 << endl;
-    cout << p_single_class_1->num_ << endl;
-
-    SingleInstance *p_single_class_2 = SingleInstance::GetSingleInstance();
-    cout << hex << p_single_class_2 << endl;
-    p_single_class_1->num_ = 15;
-
-    SingleInstance *p_single_class_3 = SingleInstance::GetSingleInstance();
-    cout << hex << p_single_class_3 << endl;
-    cout << p_single_class_1->num_ << endl;
+    // 打印下半部分
+    for (int i = length - 2; i >= 0; i--) {
+        // 打印左半部分空格
+        for (int j = 0; j < length - i - 1; j++) {
+            std::cout << "*";
+        }
+        // 打印左半部分星号
+        for (int j = 0; j < i * 2 + 1; j++) {
+            if (j == 0 || j == i * 2) {
+                std::cout << "*";
+            } else {
+                std::cout << " ";
+            }
+        }
+        // 打印右半部分星号
+        for (int j = 0; j < length - i - 1; j++) {
+            std::cout << "*";
+        }
+        std::cout << std::endl;
+    }
 
     return 0;
 }
+// #include <iostream>
+// #include <vector>
 
-// 输出结果：
-// 0xda2600
-// 0
-// 0xda2600
-// 0xda2600
-// f
+// std::vector<int> countBits(int n) {
+//     std::vector<int> counts(n + 1, 0);
+//     for (int i = 1; i <= n; ++i) {
+//         counts[i] = counts[i >> 1] + (i & 1);
+//     }
+//     return counts;
+// }
 
-// private
-SingleInstance::SingleInstance()
-{
-    num_ = 0;
-}
-// public
-SingleInstance *SingleInstance::GetSingleInstance()
-{
-    if (p_single_instance == NULL)
-    {
-        p_single_instance = new SingleInstance;
-    }
+// int main() {
+//     int n;
+//     std::cout << "Enter a non-negative integer n: ";
+//     std::cin >> n;
 
-    return p_single_instance;
-}
+//     std::vector<int> result = countBits(n);
 
-SingleInstance::~SingleInstance()
-{
-}
+//     std::cout << "Output: [";
+//     for (int i = 0; i < result.size(); ++i) {
+//         std::cout << result[i];
+//         if (i < result.size() - 1) {
+//             std::cout << ",";
+//         }
+//     }
+//     std::cout << "]" << std::endl;
+
+//     return 0;
+// }
