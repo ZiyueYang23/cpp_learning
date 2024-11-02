@@ -2122,70 +2122,88 @@
 //     return 0;
 // }
 
+// #include <iostream>
 
-#include <iostream>
+// int main()
+// {
+//     int length;
+//     std::cout << "请输入菱形的边长：";
+//     std::cin >> length;
 
-int main() {
-    int length;
-    std::cout << "请输入菱形的边长：";
-    std::cin >> length;
+//     // 打印上半部分
+//     for (int i = 0; i < length; i++)
+//     {
+//         // 打印左半部分空格
+//         for (int j = 0; j < length - i - 1; j++)
+//         {
+//             std::cout << "*";
+//         }
+//         // 打印左半部分星号
+//         for (int j = 0; j < i * 2 + 1; j++)
+//         {
+//             if (j == 0 || j == i * 2)
+//             {
+//                 std::cout << "*";
+//             }
+//             else
+//             {
+//                 std::cout << " ";
+//             }
+//         }
+//         // 打印右半部分星号
+//         for (int j = 0; j < length - i - 1; j++)
+//         {
+//             std::cout << "*";
+//         }
+//         std::cout << std::endl;
+//     }
 
-    // 打印上半部分
-    for (int i = 0; i < length; i++) {
-        // 打印左半部分空格
-        for (int j = 0; j < length - i - 1; j++) {
-            std::cout << "*";
-        }
-        // 打印左半部分星号
-        for (int j = 0; j < i * 2 + 1; j++) {
-            if (j == 0 || j == i * 2) {
-                std::cout << "*";
-            } else {
-                std::cout << " ";
-            }
-        }
-        // 打印右半部分星号
-        for (int j = 0; j < length - i - 1; j++) {
-            std::cout << "*";
-        }
-        std::cout << std::endl;
-    }
+//     // 打印下半部分
+//     for (int i = length - 2; i >= 0; i--)
+//     {
+//         // 打印左半部分空格
+//         for (int j = 0; j < length - i - 1; j++)
+//         {
+//             std::cout << "*";
+//         }
+//         // 打印左半部分星号
+//         for (int j = 0; j < i * 2 + 1; j++)
+//         {
+//             if (j == 0 || j == i * 2)
+//             {
+//                 std::cout << "*";
+//             }
+//             else
+//             {
+//                 std::cout << " ";
+//             }
+//         }
+//         // 打印右半部分星号
+//         for (int j = 0; j < length - i - 1; j++)
+//         {
+//             std::cout << "*";
+//         }
+//         std::cout << std::endl;
+//     }
 
-    // 打印下半部分
-    for (int i = length - 2; i >= 0; i--) {
-        // 打印左半部分空格
-        for (int j = 0; j < length - i - 1; j++) {
-            std::cout << "*";
-        }
-        // 打印左半部分星号
-        for (int j = 0; j < i * 2 + 1; j++) {
-            if (j == 0 || j == i * 2) {
-                std::cout << "*";
-            } else {
-                std::cout << " ";
-            }
-        }
-        // 打印右半部分星号
-        for (int j = 0; j < length - i - 1; j++) {
-            std::cout << "*";
-        }
-        std::cout << std::endl;
-    }
+//     return 0;
+// }
 
-    return 0;
-}
 // #include <iostream>
 // #include <vector>
 
-// std::vector<int> countBits(int n) {
+// std::vector<int> countBits(int n)
+// {
 //     std::vector<int> counts(n + 1, 0);
-//     for (int i = 1; i <= n; ++i) {
+//     for (int i = 1; i <= n; ++i)
+//     {
 //         counts[i] = counts[i >> 1] + (i & 1);
 //     }
 //     return counts;
 // }
 
-// int main() {
+// int main()
+// {
 //     int n;
 //     std::cout << "Enter a non-negative integer n: ";
 //     std::cin >> n;
@@ -2193,9 +2211,11 @@ int main() {
 //     std::vector<int> result = countBits(n);
 
 //     std::cout << "Output: [";
-//     for (int i = 0; i < result.size(); ++i) {
+//     for (int i = 0; i < result.size(); ++i)
+//     {
 //         std::cout << result[i];
-//         if (i < result.size() - 1) {
+//         if (i < result.size() - 1)
+//         {
 //             std::cout << ",";
 //         }
 //     }
@@ -2203,3 +2223,110 @@ int main() {
 
 //     return 0;
 // }
+
+// @ s中删除t子串
+// #include <iostream>
+// #include <vector>
+// #include <string>
+// using namespace std;
+
+// struct LinkedList
+// {
+//     char val;
+//     LinkedList *next;
+//     LinkedList() : val(), next(nullptr) {}
+// };
+
+// LinkedList *ShiftStringtoLinkedList(string &s);
+// void DisplayLinkedList(LinkedList *head);
+// void DeleteTFromS(LinkedList *&s_head, LinkedList *&t_head);
+
+// int main()
+// {
+//     string s = "abcdefgbceascsdf";
+//     string t = "bce";
+//     LinkedList *LL1 = ShiftStringtoLinkedList(s);
+//     LinkedList *LL2 = ShiftStringtoLinkedList(t);
+//     DisplayLinkedList(LL1);
+//     DisplayLinkedList(LL2);
+//     DeleteTFromS(LL1, LL2);
+//     DisplayLinkedList(LL1);
+//     DisplayLinkedList(LL2);
+
+//     return 0;
+// }
+
+// LinkedList *ShiftStringtoLinkedList(string &s)
+// {
+//     LinkedList *head = new LinkedList;
+//     LinkedList *cur = head;
+//     for (int i = 0; i < s.size()-1; i++)
+//     {
+//         cur->val = s[i];
+//         cur->next = new LinkedList;
+//         cur = cur->next;
+//     }
+//     cur->val = s[s.size() - 1];
+//     return head;
+// }
+
+// void DisplayLinkedList(LinkedList *head)
+// {
+//     LinkedList *cur = head;
+//     while (cur != nullptr)
+//     {
+//         cout << cur->val << " ";
+//         cur = cur->next;
+//     }
+//     cout << endl;
+// }
+// // 快慢指针法
+// void DeleteTFromS(LinkedList *&s_head, LinkedList *&t_head)
+// {
+//     LinkedList *fast = s_head;
+//     LinkedList *slow = t_head;
+
+//     while (slow != nullptr && fast != nullptr)
+//     {
+//         if (fast->val != slow->val)
+//         {
+//             fast = fast->next;
+//         }
+//         else
+//         {
+//             LinkedList *fast_head = fast;
+//             LinkedList *slow_head = slow;
+//             bool flage = true;
+
+//             while (slow != nullptr && fast != nullptr)
+//             {
+//                 if (fast->val == slow->val)
+//                 {
+//                     fast = fast->next;
+//                     slow = slow->next;
+//                 }
+//                 else
+//                 {
+//                     flage = false;
+//                     break;
+//                 }
+//             }
+//             if (flage == true)
+//             {
+//                 LinkedList *temp = s_head;
+//                 while (temp->next != fast_head)
+//                 {
+//                     temp = temp->next;
+//                 }
+//                 temp->next = fast;
+//             }
+//             slow = slow_head;
+//         }
+//     }
+// }
+
+// @ 求二叉树节点总数
+// 思路：前序后序中序遍历一遍加一个计数即可
+
+#include <iostream>
+#
