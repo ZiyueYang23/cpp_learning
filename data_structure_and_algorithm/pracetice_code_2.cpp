@@ -2325,90 +2325,170 @@
 //     }
 // }
 
-// @ 求二叉树节点总数
-// 思路：前序后序中序遍历一遍加一个计数即可
+// // @ 二叉树复习
+// // 思路：前序后序中序遍历一遍加一个计数即可
+
+// #include <iostream>
+// #include <vector>
+// #include <queue>
+
+// using namespace std;
+// struct TreeNode
+// {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     TreeNode(int num = 0) : val(num), left(nullptr), right(nullptr) {}
+// };
+// // 前序遍历
+// void PreOrder(TreeNode *root)
+// {
+//     if (root == nullptr)
+//     {
+//         return;
+//     }
+//     cout << root->val << " ";
+//     PreOrder(root->left);
+//     PreOrder(root->right);
+// }
+// // 中序遍历
+// void MidOrder(TreeNode *root)
+// {
+//     if (root == nullptr)
+//     {
+//         return;
+//     }
+//     PreOrder(root->left);
+//     cout << root->val << " ";
+//     PreOrder(root->right);
+// }
+// // 后序遍历
+// void LastOrder(TreeNode *root)
+// {
+//     if (root == nullptr)
+//     {
+//         return;
+//     }
+//     PreOrder(root->left);
+//     PreOrder(root->right);
+//     cout << root->val << " ";
+// }
+
+// // 正常的层序遍历
+// vector<int> NormalLevelOrder(TreeNode *root)
+// {
+//     queue<TreeNode *> que;
+//     que.push(root);
+//     vector<int> vec;
+//     while (!que.empty())
+//     {
+//         TreeNode *temp = que.front();
+//         que.pop();
+//         vec.push_back(temp->val);
+//         if (temp->left != nullptr)
+//         {
+//             que.push(temp->left);
+//         }
+//         if (temp->right != nullptr)
+//         {
+//             que.push(temp->right);
+//         }
+//     }
+//     return vec;
+// }
+// // 自上而下 从右到左的层序遍历
+// vector<int> RToLLevelOrder(TreeNode *root)
+// {
+//     queue<TreeNode *> que;
+//     que.push(root);
+//     vector<int> vec;
+//     while (!que.empty())
+//     {
+//         TreeNode *temp = que.front();
+//         que.pop();
+//         vec.push_back(temp->val);
+//         if (temp->right != nullptr)
+//         {
+//             que.push(temp->right);
+//         }
+//         if (temp->left != nullptr)
+//         {
+//             que.push(temp->left);
+//         }
+//     }
+//     return vec;
+// }
+
+// // 计算节点总数
+// int ColNodeNum(TreeNode *root)
+// {
+//     if (root == nullptr)
+//     {
+//         return 0;
+//     }
+
+//     return 1 + ColNodeNum(root->left) + ColNodeNum(root->right);
+// }
+// int main(void)
+// {
+//     TreeNode *root = new TreeNode(0);
+//     TreeNode *n1 = new TreeNode(1);
+//     TreeNode *n2 = new TreeNode(2);
+//     TreeNode *n3 = new TreeNode(3);
+//     TreeNode *n4 = new TreeNode(4);
+//     TreeNode *n5 = new TreeNode(5);
+//     TreeNode *n6 = new TreeNode(6);
+//     TreeNode *n7 = new TreeNode(7);
+
+//     root->left = n1;
+//     root->right = n2;
+//     n1->left = n3;
+//     n1->right = n4;
+//     n3->left = n6;
+//     n4->right = n7;
+//     n2->right = n5;
+
+//     cout << "先序遍历：";
+//     PreOrder(root);
+//     cout << endl;
+//     cout << "中序遍历：";
+//     MidOrder(root);
+//     cout << endl;
+//     cout << "后序遍历: ";
+//     LastOrder(root);
+//     cout << endl;
+//     cout << "节点个数为：" << ColNodeNum(root) << endl;
+//     cout << "正常的层序遍历：";
+//     vector<int> vec_0 = NormalLevelOrder(root);
+//     for (auto i : vec_0)
+//     {
+//         cout << i << " ";
+//     }
+//     cout << endl;
+//     cout << "从右至左的层序遍历：";
+//     vector<int> vec_1 = RToLLevelOrder(root);
+//     for (auto i : vec_1)
+//     {
+//         cout << i << " ";
+//     }
+//     cout << endl;
+//     return 0;
+// }
 
 #include <iostream>
+#include <vector>
+#include <stack>
+
 using namespace std;
 
-struct TreeNode
+vector<char> In2Last(vector<char> exp)
 {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int num = 0) : val(num), left(nullptr), right(nullptr) {}
-};
-// 前序遍历
-void PreOrder(TreeNode *root)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    cout << root->val << " ";
-    PreOrder(root->left);
-    PreOrder(root->right);
+    stack<char> sta;
+    sta.push('=');
+    
 }
-// 中序遍历
-void MidOrder(TreeNode *root)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    PreOrder(root->left);
-    cout << root->val << " ";
-    PreOrder(root->right);
-}
-// 后序遍历
-void LastOrder(TreeNode *root)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-    PreOrder(root->left);
-    PreOrder(root->right);
-    cout << root->val << " ";
-}
-int ColNodeNum(TreeNode *root)
-{
-    if (root == nullptr)
-    {
-        return 0;
-    }
 
-    return 1 + ColNodeNum(root->left) + ColNodeNum(root->right);
-}
 int main(void)
 {
-    TreeNode *root = new TreeNode(0);
-    TreeNode *n1 = new TreeNode(1);
-    TreeNode *n2 = new TreeNode(2);
-    TreeNode *n3 = new TreeNode(3);
-    TreeNode *n4 = new TreeNode(4);
-    TreeNode *n5 = new TreeNode(5);
-    TreeNode *n6 = new TreeNode(6);
-    TreeNode *n7 = new TreeNode(7);
-
-    root->left = n1;
-    root->right = n2;
-    n1->left = n3;
-    n1->right = n4;
-    n3->left = n6;
-    n4->right = n7;
-    n2->right = n5;
-
-    cout << "先序遍历：";
-    PreOrder(root);
-    cout << endl;
-    cout << "中序遍历：";
-    MidOrder(root);
-    cout << endl;
-    cout << "后序遍历: ";
-    LastOrder(root);
-    cout << endl;
-    cout << "节点个数为：" << ColNodeNum(root) << endl;
-    
     return 0;
 }
