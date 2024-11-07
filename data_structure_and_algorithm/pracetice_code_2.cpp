@@ -2475,20 +2475,269 @@
 //     return 0;
 // }
 
+// #include <iostream>
+// #include <stack>
+// #include <string>
+// // isdigit函数需要包含头文件
+// #include <cctype>
+// #include <cstdlib>
+
+// using namespace std;
+
+// // 运算符优先级
+// int precedence(char op)
+// {
+//     if (op == '+' || op == '-')
+//         return 1;
+//     if (op == '*' || op == '/')
+//         return 2;
+//     return 0;
+// }
+
+// // 中缀转后缀
+// string infixToPostfix(const string &exp)
+// {
+//     stack<char> opStack;
+//     string postfix;
+//     opStack.push('=');
+
+//     for (size_t i = 0; i < exp.size(); ++i)
+//     {
+//         char ch = exp[i];
+
+//         if (isdigit(ch))
+//         {
+//             // 如果是数字，读取完整的数字，直到遇到非数字字符
+//             while (i < exp.size() && isdigit(exp[i]))
+//             {
+//                 postfix += exp[i++];
+//             }
+//             postfix += '#';
+//             i--;
+//         }
+//         else if (ch == '(')
+//         {
+//             // 左括号直接进栈
+//             opStack.push(ch);
+//         }
+//         else if (ch == ')')
+//         {
+//             // 右括号时，将栈顶的运算符出栈，直到遇到左括号
+//             while (opStack.top() != '(')
+//             {
+//                 postfix += opStack.top();
+//                 opStack.pop();
+//             }
+//             opStack.pop();
+//         }
+//         else if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
+//         {
+//             //  比较优先级
+//             while (precedence(opStack.top()) >= precedence(ch))
+//             {
+//                 postfix += opStack.top();
+//                 opStack.pop();
+//             }
+//             opStack.push(ch);
+//         }
+//     }
+
+//     // 弹出所有剩余的运算符
+//     while (opStack.top() != '=')
+//     {
+//         postfix += opStack.top();
+//         opStack.pop();
+//     }
+
+//     return postfix;
+// }
+
+// // 求值后缀
+// int evaluatePostfix(const string &postfix)
+// {
+//     stack<int> valueStack;
+
+//     for (size_t i = 0; i < postfix.size(); ++i)
+//     {
+//         char ch = postfix[i];
+
+//         if (isdigit(ch))
+//         {
+
+//             string numStr = "";
+//             while (i < postfix.size() && isdigit(postfix[i]))
+//             {
+//                 numStr += postfix[i++];
+//             }
+//             valueStack.push(atoi(numStr.c_str()));
+//             i--;
+//         }
+//         else if (ch == '#')
+//         {
+//             continue;
+//         }
+//         else
+//         {
+//             int val2 = valueStack.top();
+//             valueStack.pop();
+//             int val1 = valueStack.top();
+//             valueStack.pop();
+//             switch (ch)
+//             {
+//             case '+':
+//                 valueStack.push(val1 + val2);
+//                 break;
+//             case '-':
+//                 valueStack.push(val1 - val2);
+//                 break;
+//             case '*':
+//                 valueStack.push(val1 * val2);
+//                 break;
+//             case '/':
+//                 if (val2 == 0)
+//                 {
+//                     cout << "Error: Division by zero!" << endl;
+//                     return 0;
+//                 }
+//                 valueStack.push(val1 / val2);
+//                 break;
+//             default:
+//                 break;
+//             }
+//         }
+//     }
+
+//     return valueStack.top();
+// }
+
+// int main()
+// {
+//     string exp;
+//     cout << "Enter an infix expression: ";
+//     getline(cin, exp);
+
+//     // 中缀转为后缀
+//     string postfix = infixToPostfix(exp);
+//     cout << "Postfix expression: " << postfix << endl;
+
+//     // 求值后缀
+//     int result = evaluatePostfix(postfix);
+//     cout << "Result: " << result << endl;
+
+//     return 0;
+// }
 #include <iostream>
+#include <queue>
 #include <vector>
-#include <stack>
+#include <algorithm>
 
 using namespace std;
 
-vector<char> In2Last(vector<char> exp)
+// 初始化缓冲轨道
+vector<queue<int>> initializeTracks(int k)
 {
-    stack<char> sta;
-    sta.push('=');
-    
+    return vector<queue<int>>(k);
 }
 
-int main(void)
+// 找到满足条件的缓冲轨道编号
+int findTrackToInsert(vector<queue<int>> &tracks, int car)
 {
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        // 如果轨道为空，或者轨道中的车厢编号比当前车厢编号大，可以插入
+        if (tracks[i].empty() || tracks[i].back() > car)
+        {
+            return i; // 返回合适的缓冲轨道编号
+        }
+    }
+    return -1; // 没有合适的缓冲轨道
+}
+
+// 输出车厢编号
+void outputCar(int car)
+{
+    cout << "输出车厢编号: " << car << endl;
+}
+
+// 判断是否可以重排车厢
+bool canReorderCars(vector<int> &cars, int k)
+{
+    vector<queue<int>> tracks = initializeTracks(k); // 初始化k个缓冲轨道
+    int nowOut = 1;                                  // 初始化next output car number
+
+    for (int car : cars)
+    {
+        // Step 1: 如果车厢编号等于nowOut，直接输出
+        if (car == nowOut)
+        {
+            outputCar(car);
+            nowOut++;
+            continue;
+        }
+
+        // Step 2: 检查缓冲轨道中的车厢是否可以输出
+        bool found = false;
+        for (int j = 0; j < k; ++j)
+        {
+            while (!tracks[j].empty() && tracks[j].front() == nowOut)
+            {
+                outputCar(tracks[j].front());
+                tracks[j].pop();
+                nowOut++;
+                found = true;
+            }
+        }
+        if (found)
+            continue; // 如果从缓冲轨道中找到了车厢并输出，继续处理下一个车厢
+
+        // Step 3: 尝试将当前车厢插入一个合适的缓冲轨道
+        int trackIndex = findTrackToInsert(tracks, car);
+        if (trackIndex != -1)
+        {
+            tracks[trackIndex].push(car); // 将车厢插入合适的缓冲轨道
+        }
+        else
+        {
+            // 如果没有找到合适的缓冲轨道，车厢无法重排
+            cout << "无法重排车厢！" << endl;
+            return false;
+        }
+    }
+
+    // Step 4: 将缓冲轨道中的车厢按顺序输出
+    for (int j = 0; j < k; ++j)
+    {
+        while (!tracks[j].empty())
+        {
+            if (tracks[j].front() == nowOut)
+            {
+                outputCar(tracks[j].front());
+                tracks[j].pop();
+                nowOut++;
+            }
+            else
+            {
+                cout << "无法重排车厢！" << endl;
+                return false;
+            }
+        }
+    }
+    return true; // 成功完成车厢重排
+}
+
+int main()
+{
+    vector<int> cars = {5, 1, 4, 2, 3}; // 示例车厢序列
+    int k = 3;                          // 缓冲轨数量
+
+    if (canReorderCars(cars, k))
+    {
+        cout << "车厢重排成功！" << endl;
+    }
+    else
+    {
+        cout << "车厢重排失败！" << endl;
+    }
+
     return 0;
 }
