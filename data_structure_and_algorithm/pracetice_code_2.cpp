@@ -2806,15 +2806,17 @@ struct Triple
     int col;
     int val;
 };
-// 稀疏矩阵
+// 稀疏矩阵 其实也不能叫稀疏矩阵，算是将稀疏矩阵转成三元组表
 struct SparseMatrix
 {
     int rows;
     int cols;
     int non_size_count;
+    // 由三元组构成的三元组表 其中存放的是稀疏矩阵中的所有非零元素
     std::vector<Triple> elements;
 };
 
+// 常规暴力解法
 SparseMatrix TransNormal(SparseMatrix &matrix_a)
 {
     SparseMatrix matrix_b;
@@ -2828,11 +2830,14 @@ SparseMatrix TransNormal(SparseMatrix &matrix_a)
     // {
     //     matrix_b.elements.push_back({element.col, element.row, element.val});
     // }
+
     int b_cur = 0;
     if (matrix_a.non_size_count != 0)
     {
         for (int col = 0; col < matrix_a.cols; col++)
         {
+            // 这里是从三元组表中从0开始遍历 比对a矩阵中的元素中col是否等于正在遍历的col 若等于则pushback 由于col从0开始到a矩阵的最后一列结束。
+            // 因为a矩阵的列到b中就是行，此时a中的列符合从小到大优先，因此在b中存储的就是对于b行优先的三元组
             for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
             {
                 if (matrix_a.elements[a_cur].col == col)
@@ -2846,6 +2851,7 @@ SparseMatrix TransNormal(SparseMatrix &matrix_a)
 
     return matrix_b;
 }
+
 SparseMatrix TransBetter(SparseMatrix &matrix_a)
 {
     SparseMatrix matrix_b;
@@ -2853,19 +2859,26 @@ SparseMatrix TransBetter(SparseMatrix &matrix_a)
     matrix_b.rows = matrix_a.cols;
     matrix_b.cols = matrix_a.rows;
     matrix_b.non_size_count = matrix_a.non_size_count;
+    // 由于后面要直接进行下标访问，因此相比于暴力法，需要开始先创建好三元组表
+    // 这里采用直接复制，反正后面也会修改
     matrix_b.elements = matrix_a.elements;
 
+    // num中放的是a中每一列中非零元素的值
     int num[matrix_a.cols] = {};
+    // cpot中放的是a中每一列第一个非零元素对应在三元组表中的下标
     int cpot[matrix_a.non_size_count] = {};
     if (matrix_a.non_size_count != 0)
     {
         for (int cur = 0; cur < matrix_a.non_size_count; cur++)
         {
+            // 这一步也非常巧妙，遍历a矩阵三元组表中的那一列，正好是对应每一列元素，直接 num[1]++ 
             num[matrix_a.elements[cur].col]++;
         }
+        // b矩阵的三元组表中的第一个元素就是下标为0
         cpot[0] = 0;
         for (int col = 1; col < matrix_a.cols; col++)
         {
+            // 此后需要寻找a矩阵中下一列第一个非零元素的在b矩阵中三元组表中应该存放的下标位置
             cpot[col] = cpot[col - 1] + num[col - 1];
         }
         int b_cur = 0;
@@ -2874,6 +2887,7 @@ SparseMatrix TransBetter(SparseMatrix &matrix_a)
             int col = matrix_a.elements[a_cur].col;
             b_cur = cpot[col];
             matrix_b.elements[b_cur] = {matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val};
+            // 为何会++ 因为如果这一列有2甚至更多元素cpot只是存了该列第一个元素在b三元表中的位置，现在有该列第二个元素进去就应把位置后移一个，而且不需要考虑会不会重合，因为cpot数组中下一个会是截止位置
             cpot[col]++;
         }
     }
