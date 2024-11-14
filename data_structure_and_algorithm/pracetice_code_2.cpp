@@ -2626,118 +2626,274 @@
 
 //     return 0;
 // }
+
+// #include <iostream>
+// #include <queue>
+// #include <vector>
+// #include <algorithm>
+
+// using namespace std;
+
+// // 初始化缓冲轨道
+// vector<queue<int>> initializeTracks(int k)
+// {
+//     return vector<queue<int>>(k);
+// }
+
+// // 找到满足条件的缓冲轨道编号
+// int findTrackToInsert(vector<queue<int>> &tracks, int car)
+// {
+//     for (int i = 0; i < tracks.size(); ++i)
+//     {
+//         // 如果轨道为空，或者轨道中的车厢编号比当前车厢编号大，可以插入
+//         if (tracks[i].empty() || tracks[i].back() > car)
+//         {
+//             return i; // 返回合适的缓冲轨道编号
+//         }
+//     }
+//     return -1; // 没有合适的缓冲轨道
+// }
+
+// // 输出车厢编号
+// void outputCar(int car)
+// {
+//     cout << "输出车厢编号: " << car << endl;
+// }
+
+// // 判断是否可以重排车厢
+// bool canReorderCars(vector<int> &cars, int k)
+// {
+//     vector<queue<int>> tracks = initializeTracks(k); // 初始化k个缓冲轨道
+//     int nowOut = 1;                                  // 初始化next output car number
+
+//     for (int car : cars)
+//     {
+//         // Step 1: 如果车厢编号等于nowOut，直接输出
+//         if (car == nowOut)
+//         {
+//             outputCar(car);
+//             nowOut++;
+//             continue;
+//         }
+
+//         // Step 2: 检查缓冲轨道中的车厢是否可以输出
+//         bool found = false;
+//         for (int j = 0; j < k; ++j)
+//         {
+//             while (!tracks[j].empty() && tracks[j].front() == nowOut)
+//             {
+//                 outputCar(tracks[j].front());
+//                 tracks[j].pop();
+//                 nowOut++;
+//                 found = true;
+//             }
+//         }
+//         if (found)
+//             continue; // 如果从缓冲轨道中找到了车厢并输出，继续处理下一个车厢
+
+//         // Step 3: 尝试将当前车厢插入一个合适的缓冲轨道
+//         int trackIndex = findTrackToInsert(tracks, car);
+//         if (trackIndex != -1)
+//         {
+//             tracks[trackIndex].push(car); // 将车厢插入合适的缓冲轨道
+//         }
+//         else
+//         {
+//             // 如果没有找到合适的缓冲轨道，车厢无法重排
+//             cout << "无法重排车厢！" << endl;
+//             return false;
+//         }
+//     }
+
+//     // Step 4: 将缓冲轨道中的车厢按顺序输出
+//     for (int j = 0; j < k; ++j)
+//     {
+//         while (!tracks[j].empty())
+//         {
+//             if (tracks[j].front() == nowOut)
+//             {
+//                 outputCar(tracks[j].front());
+//                 tracks[j].pop();
+//                 nowOut++;
+//             }
+//             else
+//             {
+//                 cout << "无法重排车厢！" << endl;
+//                 return false;
+//             }
+//         }
+//     }
+//     return true; // 成功完成车厢重排
+// }
+
+// int main()
+// {
+//     vector<int> cars = {5, 1, 4, 2, 3}; // 示例车厢序列
+//     int k = 3;                          // 缓冲轨数量
+
+//     if (canReorderCars(cars, k))
+//     {
+//         cout << "车厢重排成功！" << endl;
+//     }
+//     else
+//     {
+//         cout << "车厢重排失败！" << endl;
+//     }
+
+//     return 0;
+// }
+
+// // @ 顺序存实现
+
+// #include <iostream>
+// #include <vector>
+// // 三元 行 列 值
+// struct Triple
+// {
+//     int row;
+//     int col;
+//     int val;
+// };
+// // 稀疏矩阵
+// struct SparseMatrix
+// {
+//     int rows;
+//     int cols;
+//     int non_size_count;
+//     std::vector<Triple> elements;
+// };
+
+// SparseMatrix Trans(SparseMatrix &matrix_a)
+// {
+//     SparseMatrix matrix_b;
+//     // 完成对转置矩阵的初始化
+//     matrix_b.rows = matrix_a.cols;
+//     matrix_b.cols = matrix_a.rows;
+//     matrix_b.non_size_count = matrix_a.non_size_count;
+
+//     for (auto element : matrix_a.elements)
+//     {
+//         matrix_b.elements.push_back({element.col, element.row, element.val});
+//     }
+//     return matrix_b;
+// }
+
+// void Print(SparseMatrix &matrix)
+// {
+//     std::cout << "Rows: " << matrix.rows << ", Cols: " << matrix.cols << std::endl;
+//     for (auto element : matrix.elements)
+//     {
+//         std::cout << "Row: " << element.row << ", Col: " << element.col << ", Value: " << element.val << std::endl;
+//     }
+// }
+// int main(void)
+// {
+//     SparseMatrix matrix_a = {3, 3, 3, {{0, 1, 5}, {1, 0, 8}, {2, 2, 3}}};
+//     SparseMatrix matrix_b = Trans(matrix_a);
+//     Print(matrix_b);
+//     return 0;
+// }
+
+// @ 顺序取直接存实现
+
 #include <iostream>
-#include <queue>
 #include <vector>
-#include <algorithm>
 
-using namespace std;
-
-// 初始化缓冲轨道
-vector<queue<int>> initializeTracks(int k)
+// 三元 行 列 值
+struct Triple
 {
-    return vector<queue<int>>(k);
-}
-
-// 找到满足条件的缓冲轨道编号
-int findTrackToInsert(vector<queue<int>> &tracks, int car)
+    int row;
+    int col;
+    int val;
+};
+// 稀疏矩阵
+struct SparseMatrix
 {
-    for (int i = 0; i < tracks.size(); ++i)
+    int rows;
+    int cols;
+    int non_size_count;
+    std::vector<Triple> elements;
+};
+
+SparseMatrix TransNormal(SparseMatrix &matrix_a)
+{
+    SparseMatrix matrix_b;
+    // 完成对转置矩阵的初始化
+    matrix_b.rows = matrix_a.cols;
+    matrix_b.cols = matrix_a.rows;
+    matrix_b.non_size_count = matrix_a.non_size_count;
+
+    // 有问题的实现 这个单单只有交换没有完成排序 这种情况是列优先，而我们需要行优先
+    // for (auto element : matrix_a.elements)
+    // {
+    //     matrix_b.elements.push_back({element.col, element.row, element.val});
+    // }
+    int b_cur = 0;
+    if (matrix_a.non_size_count != 0)
     {
-        // 如果轨道为空，或者轨道中的车厢编号比当前车厢编号大，可以插入
-        if (tracks[i].empty() || tracks[i].back() > car)
+        for (int col = 0; col < matrix_a.cols; col++)
         {
-            return i; // 返回合适的缓冲轨道编号
-        }
-    }
-    return -1; // 没有合适的缓冲轨道
-}
-
-// 输出车厢编号
-void outputCar(int car)
-{
-    cout << "输出车厢编号: " << car << endl;
-}
-
-// 判断是否可以重排车厢
-bool canReorderCars(vector<int> &cars, int k)
-{
-    vector<queue<int>> tracks = initializeTracks(k); // 初始化k个缓冲轨道
-    int nowOut = 1;                                  // 初始化next output car number
-
-    for (int car : cars)
-    {
-        // Step 1: 如果车厢编号等于nowOut，直接输出
-        if (car == nowOut)
-        {
-            outputCar(car);
-            nowOut++;
-            continue;
-        }
-
-        // Step 2: 检查缓冲轨道中的车厢是否可以输出
-        bool found = false;
-        for (int j = 0; j < k; ++j)
-        {
-            while (!tracks[j].empty() && tracks[j].front() == nowOut)
+            for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
             {
-                outputCar(tracks[j].front());
-                tracks[j].pop();
-                nowOut++;
-                found = true;
-            }
-        }
-        if (found)
-            continue; // 如果从缓冲轨道中找到了车厢并输出，继续处理下一个车厢
-
-        // Step 3: 尝试将当前车厢插入一个合适的缓冲轨道
-        int trackIndex = findTrackToInsert(tracks, car);
-        if (trackIndex != -1)
-        {
-            tracks[trackIndex].push(car); // 将车厢插入合适的缓冲轨道
-        }
-        else
-        {
-            // 如果没有找到合适的缓冲轨道，车厢无法重排
-            cout << "无法重排车厢！" << endl;
-            return false;
-        }
-    }
-
-    // Step 4: 将缓冲轨道中的车厢按顺序输出
-    for (int j = 0; j < k; ++j)
-    {
-        while (!tracks[j].empty())
-        {
-            if (tracks[j].front() == nowOut)
-            {
-                outputCar(tracks[j].front());
-                tracks[j].pop();
-                nowOut++;
-            }
-            else
-            {
-                cout << "无法重排车厢！" << endl;
-                return false;
+                if (matrix_a.elements[a_cur].col == col)
+                {
+                    matrix_b.elements.push_back({matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val});
+                    b_cur++;
+                }
             }
         }
     }
-    return true; // 成功完成车厢重排
+
+    return matrix_b;
+}
+SparseMatrix TransBetter(SparseMatrix &matrix_a)
+{
+    SparseMatrix matrix_b;
+    // 完成对转置矩阵的初始化
+    matrix_b.rows = matrix_a.cols;
+    matrix_b.cols = matrix_a.rows;
+    matrix_b.non_size_count = matrix_a.non_size_count;
+    matrix_b.elements = matrix_a.elements;
+
+    int num[matrix_a.cols] = {};
+    int cpot[matrix_a.non_size_count] = {};
+    if (matrix_a.non_size_count != 0)
+    {
+        for (int cur = 0; cur < matrix_a.non_size_count; cur++)
+        {
+            num[matrix_a.elements[cur].col]++;
+        }
+        cpot[0] = 0;
+        for (int col = 1; col < matrix_a.cols; col++)
+        {
+            cpot[col] = cpot[col - 1] + num[col - 1];
+        }
+        int b_cur = 0;
+        for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
+        {
+            int col = matrix_a.elements[a_cur].col;
+            b_cur = cpot[col];
+            matrix_b.elements[b_cur] = {matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val};
+            cpot[col]++;
+        }
+    }
+
+    return matrix_b;
 }
 
-int main()
+void Print(SparseMatrix &matrix)
 {
-    vector<int> cars = {5, 1, 4, 2, 3}; // 示例车厢序列
-    int k = 3;                          // 缓冲轨数量
-
-    if (canReorderCars(cars, k))
+    std::cout << "Rows: " << matrix.rows << ", Cols: " << matrix.cols << std::endl;
+    for (auto element : matrix.elements)
     {
-        cout << "车厢重排成功！" << endl;
+        std::cout << "Row: " << element.row << ", Col: " << element.col << ", Value: " << element.val << std::endl;
     }
-    else
-    {
-        cout << "车厢重排失败！" << endl;
-    }
-
+}
+int main(void)
+{
+    SparseMatrix matrix_a = {6, 7, 6, {{0, 1, 3}, {1, 3, 5}, {2, 5, -2}, {4, 0, 4}, {4, 2, 6}, {5, 6, 8}}};
+    SparseMatrix matrix_b = TransBetter(matrix_a);
+    Print(matrix_a);
+    Print(matrix_b);
     return 0;
 }
