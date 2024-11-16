@@ -2794,120 +2794,206 @@
 //     return 0;
 // }
 
-// @ 顺序取直接存实现
+// // @ 顺序取直接存实现
 
+// #include <iostream>
+// #include <vector>
+
+// // 三元 行 列 值
+// struct Triple
+// {
+//     int row;
+//     int col;
+//     int val;
+// };
+// // 稀疏矩阵 其实也不能叫稀疏矩阵，算是将稀疏矩阵转成三元组表
+// struct SparseMatrix
+// {
+//     int rows;
+//     int cols;
+//     int non_size_count;
+//     // 由三元组构成的三元组表 其中存放的是稀疏矩阵中的所有非零元素
+//     std::vector<Triple> elements;
+// };
+
+// // 常规暴力解法
+// SparseMatrix TransNormal(SparseMatrix &matrix_a)
+// {
+//     SparseMatrix matrix_b;
+//     // 完成对转置矩阵的初始化
+//     matrix_b.rows = matrix_a.cols;
+//     matrix_b.cols = matrix_a.rows;
+//     matrix_b.non_size_count = matrix_a.non_size_count;
+
+//     // 有问题的实现 这个单单只有交换没有完成排序 这种情况是列优先，而我们需要行优先
+//     // for (auto element : matrix_a.elements)
+//     // {
+//     //     matrix_b.elements.push_back({element.col, element.row, element.val});
+//     // }
+
+//     int b_cur = 0;
+//     if (matrix_a.non_size_count != 0)
+//     {
+//         for (int col = 0; col < matrix_a.cols; col++)
+//         {
+//             // 这里是从三元组表中从0开始遍历 比对a矩阵中的元素中col是否等于正在遍历的col 若等于则pushback 由于col从0开始到a矩阵的最后一列结束。
+//             // 因为a矩阵的列到b中就是行，此时a中的列符合从小到大优先，因此在b中存储的就是对于b行优先的三元组
+//             for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
+//             {
+//                 if (matrix_a.elements[a_cur].col == col)
+//                 {
+//                     matrix_b.elements.push_back({matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val});
+//                     b_cur++;
+//                 }
+//             }
+//         }
+//     }
+
+//     return matrix_b;
+// }
+
+// SparseMatrix TransBetter(SparseMatrix &matrix_a)
+// {
+//     SparseMatrix matrix_b;
+//     // 完成对转置矩阵的初始化
+//     matrix_b.rows = matrix_a.cols;
+//     matrix_b.cols = matrix_a.rows;
+//     matrix_b.non_size_count = matrix_a.non_size_count;
+//     // 由于后面要直接进行下标访问，因此相比于暴力法，需要开始先创建好三元组表
+//     // 这里采用直接复制，反正后面也会修改
+//     matrix_b.elements = matrix_a.elements;
+
+//     // num中放的是a中每一列中非零元素的值
+//     int num[matrix_a.cols] = {};
+//     // cpot中放的是a中每一列第一个非零元素对应在三元组表中的下标
+//     int cpot[matrix_a.non_size_count] = {};
+//     if (matrix_a.non_size_count != 0)
+//     {
+//         for (int cur = 0; cur < matrix_a.non_size_count; cur++)
+//         {
+//             // 这一步也非常巧妙，遍历a矩阵三元组表中的那一列，正好是对应每一列元素，直接 num[1]++
+//             num[matrix_a.elements[cur].col]++;
+//         }
+//         // b矩阵的三元组表中的第一个元素就是下标为0
+//         cpot[0] = 0;
+//         for (int col = 1; col < matrix_a.cols; col++)
+//         {
+//             // 此后需要寻找a矩阵中下一列第一个非零元素的在b矩阵中三元组表中应该存放的下标位置
+//             cpot[col] = cpot[col - 1] + num[col - 1];
+//         }
+//         int b_cur = 0;
+//         for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
+//         {
+//             int col = matrix_a.elements[a_cur].col;
+//             b_cur = cpot[col];
+//             matrix_b.elements[b_cur] = {matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val};
+//             // 为何会++ 因为如果这一列有2甚至更多元素cpot只是存了该列第一个元素在b三元表中的位置，现在有该列第二个元素进去就应把位置后移一个，而且不需要考虑会不会重合，因为cpot数组中下一个会是截止位置
+//             cpot[col]++;
+//         }
+//     }
+
+//     return matrix_b;
+// }
+
+// void Print(SparseMatrix &matrix)
+// {
+//     std::cout << "Rows: " << matrix.rows << ", Cols: " << matrix.cols << std::endl;
+//     for (auto element : matrix.elements)
+//     {
+//         std::cout << "Row: " << element.row << ", Col: " << element.col << ", Value: " << element.val << std::endl;
+//     }
+// }
+// int main(void)
+// {
+//     SparseMatrix matrix_a = {6, 7, 6, {{0, 1, 3}, {1, 3, 5}, {2, 5, -2}, {4, 0, 4}, {4, 2, 6}, {5, 6, 8}}};
+//     SparseMatrix matrix_b = TransBetter(matrix_a);
+//     Print(matrix_a);
+//     Print(matrix_b);
+//     return 0;
+// }
+
+// @ 二叉树的遍历 后序遍历 非递归
 #include <iostream>
 #include <vector>
+#include <stack>
 
-// 三元 行 列 值
-struct Triple
+using namespace std;
+
+struct Node
 {
-    int row;
-    int col;
     int val;
-};
-// 稀疏矩阵 其实也不能叫稀疏矩阵，算是将稀疏矩阵转成三元组表
-struct SparseMatrix
-{
-    int rows;
-    int cols;
-    int non_size_count;
-    // 由三元组构成的三元组表 其中存放的是稀疏矩阵中的所有非零元素
-    std::vector<Triple> elements;
+    Node *left;  
+    Node *right;
+    bool flag;
+    Node(int num = 0) : val(num), right(nullptr), left(nullptr), flag(0) {}
 };
 
-// 常规暴力解法
-SparseMatrix TransNormal(SparseMatrix &matrix_a)
+vector<int> PostOrderLoop(Node *head)
 {
-    SparseMatrix matrix_b;
-    // 完成对转置矩阵的初始化
-    matrix_b.rows = matrix_a.cols;
-    matrix_b.cols = matrix_a.rows;
-    matrix_b.non_size_count = matrix_a.non_size_count;
+    stack<Node *> my_sta;
+    vector<int> result(0);
+    Node *root = head;
 
-    // 有问题的实现 这个单单只有交换没有完成排序 这种情况是列优先，而我们需要行优先
-    // for (auto element : matrix_a.elements)
-    // {
-    //     matrix_b.elements.push_back({element.col, element.row, element.val});
-    // }
-
-    int b_cur = 0;
-    if (matrix_a.non_size_count != 0)
+    // 栈空时empty返回true
+    while (root != nullptr || !my_sta.empty())
     {
-        for (int col = 0; col < matrix_a.cols; col++)
+        // 这就是把左边走干净
+        while (root != nullptr)
         {
-            // 这里是从三元组表中从0开始遍历 比对a矩阵中的元素中col是否等于正在遍历的col 若等于则pushback 由于col从0开始到a矩阵的最后一列结束。
-            // 因为a矩阵的列到b中就是行，此时a中的列符合从小到大优先，因此在b中存储的就是对于b行优先的三元组
-            for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
-            {
-                if (matrix_a.elements[a_cur].col == col)
-                {
-                    matrix_b.elements.push_back({matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val});
-                    b_cur++;
-                }
-            }
+            my_sta.emplace(root);
+            root = root->left;
+        }
+
+        //获取栈顶元素
+        Node *sta_top = my_sta.top();
+
+        if (!my_sta.empty() && sta_top->flag == 1)
+        {
+            // 由于flag==1，此时说明已经没有右子树了，左右子树已经遍历完成，这个节点可以装入vector，弹出栈
+            result.push_back(sta_top->val);
+            my_sta.pop();
+        }
+        if (!my_sta.empty() && sta_top->flag == 0)
+        {
+            // 更新flag目的是保证左子树已经遍历完成，开始遍历右子树
+            sta_top->flag = 1;
+            // 此时左子树已经完成，因为右子树还没有完成遍历因此不能直接弹出栈顶元素
+            root = sta_top->right;
         }
     }
 
-    return matrix_b;
+    return result;
 }
 
-SparseMatrix TransBetter(SparseMatrix &matrix_a)
+int main()
 {
-    SparseMatrix matrix_b;
-    // 完成对转置矩阵的初始化
-    matrix_b.rows = matrix_a.cols;
-    matrix_b.cols = matrix_a.rows;
-    matrix_b.non_size_count = matrix_a.non_size_count;
-    // 由于后面要直接进行下标访问，因此相比于暴力法，需要开始先创建好三元组表
-    // 这里采用直接复制，反正后面也会修改
-    matrix_b.elements = matrix_a.elements;
+    Node *root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
 
-    // num中放的是a中每一列中非零元素的值
-    int num[matrix_a.cols] = {};
-    // cpot中放的是a中每一列第一个非零元素对应在三元组表中的下标
-    int cpot[matrix_a.non_size_count] = {};
-    if (matrix_a.non_size_count != 0)
+    // 非递归后序遍历
+    vector<int> result = PostOrderLoop(root);
+
+    // 打印
+    cout << "Post-order traversal (non-recursive): ";
+    for (int val : result)
     {
-        for (int cur = 0; cur < matrix_a.non_size_count; cur++)
-        {
-            // 这一步也非常巧妙，遍历a矩阵三元组表中的那一列，正好是对应每一列元素，直接 num[1]++ 
-            num[matrix_a.elements[cur].col]++;
-        }
-        // b矩阵的三元组表中的第一个元素就是下标为0
-        cpot[0] = 0;
-        for (int col = 1; col < matrix_a.cols; col++)
-        {
-            // 此后需要寻找a矩阵中下一列第一个非零元素的在b矩阵中三元组表中应该存放的下标位置
-            cpot[col] = cpot[col - 1] + num[col - 1];
-        }
-        int b_cur = 0;
-        for (int a_cur = 0; a_cur < matrix_a.non_size_count; a_cur++)
-        {
-            int col = matrix_a.elements[a_cur].col;
-            b_cur = cpot[col];
-            matrix_b.elements[b_cur] = {matrix_a.elements[a_cur].col, matrix_a.elements[a_cur].row, matrix_a.elements[a_cur].val};
-            // 为何会++ 因为如果这一列有2甚至更多元素cpot只是存了该列第一个元素在b三元表中的位置，现在有该列第二个元素进去就应把位置后移一个，而且不需要考虑会不会重合，因为cpot数组中下一个会是截止位置
-            cpot[col]++;
-        }
+        cout << val << " ";
     }
+    cout << endl;
 
-    return matrix_b;
-}
+    // 释放动态内存
+    delete root->left->left;
+    delete root->left->right;
+    delete root->right->left;
+    delete root->right->right;
+    delete root->left;
+    delete root->right;
+    delete root;
 
-void Print(SparseMatrix &matrix)
-{
-    std::cout << "Rows: " << matrix.rows << ", Cols: " << matrix.cols << std::endl;
-    for (auto element : matrix.elements)
-    {
-        std::cout << "Row: " << element.row << ", Col: " << element.col << ", Value: " << element.val << std::endl;
-    }
-}
-int main(void)
-{
-    SparseMatrix matrix_a = {6, 7, 6, {{0, 1, 3}, {1, 3, 5}, {2, 5, -2}, {4, 0, 4}, {4, 2, 6}, {5, 6, 8}}};
-    SparseMatrix matrix_b = TransBetter(matrix_a);
-    Print(matrix_a);
-    Print(matrix_b);
     return 0;
 }
