@@ -2912,88 +2912,88 @@
 //     return 0;
 // }
 
-// @ 二叉树的遍历 后序遍历 非递归
-#include <iostream>
-#include <vector>
-#include <stack>
+// // @ 二叉树的遍历 后序遍历 非递归
+// #include <iostream>
+// #include <vector>
+// #include <stack>
 
-using namespace std;
+// using namespace std;
 
-struct Node
-{
-    int val;
-    Node *left;  
-    Node *right;
-    bool flag;
-    Node(int num = 0) : val(num), right(nullptr), left(nullptr), flag(0) {}
-};
+// struct Node
+// {
+//     int val;
+//     Node *left;  
+//     Node *right;
+//     bool flag;
+//     Node(int num = 0) : val(num), right(nullptr), left(nullptr), flag(0) {}
+// };
 
-vector<int> PostOrderLoop(Node *head)
-{
-    stack<Node *> my_sta;
-    vector<int> result(0);
-    Node *root = head;
+// vector<int> PostOrderLoop(Node *head)
+// {
+//     stack<Node *> my_sta;
+//     vector<int> result(0);
+//     Node *root = head;
 
-    // 栈空时empty返回true
-    while (root != nullptr || !my_sta.empty())
-    {
-        // 这就是把左边走干净
-        while (root != nullptr)
-        {
-            my_sta.emplace(root);
-            root = root->left;
-        }
+//     // 栈空时empty返回true
+//     while (root != nullptr || !my_sta.empty())
+//     {
+//         // 这就是把左边走干净
+//         while (root != nullptr)
+//         {
+//             my_sta.emplace(root);
+//             root = root->left;
+//         }
 
-        //获取栈顶元素
-        Node *sta_top = my_sta.top();
+//         //获取栈顶元素
+//         Node *sta_top = my_sta.top();
 
-        if (!my_sta.empty() && sta_top->flag == 1)
-        {
-            // 由于flag==1，此时说明已经没有右子树了，左右子树已经遍历完成，这个节点可以装入vector，弹出栈
-            result.push_back(sta_top->val);
-            my_sta.pop();
-        }
-        if (!my_sta.empty() && sta_top->flag == 0)
-        {
-            // 更新flag目的是保证左子树已经遍历完成，开始遍历右子树
-            sta_top->flag = 1;
-            // 此时左子树已经完成，因为右子树还没有完成遍历因此不能直接弹出栈顶元素
-            root = sta_top->right;
-        }
-    }
+//         if (!my_sta.empty() && sta_top->flag == 1)
+//         {
+//             // 由于flag==1，此时说明已经没有右子树了，左右子树已经遍历完成，这个节点可以装入vector，弹出栈
+//             result.push_back(sta_top->val);
+//             my_sta.pop();
+//         }
+//         if (!my_sta.empty() && sta_top->flag == 0)
+//         {
+//             // 更新flag目的是保证左子树已经遍历完成，开始遍历右子树
+//             sta_top->flag = 1;
+//             // 此时左子树已经完成，因为右子树还没有完成遍历因此不能直接弹出栈顶元素
+//             root = sta_top->right;
+//         }
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
-int main()
-{
-    Node *root = new Node(1);
-    root->left = new Node(2);
-    root->right = new Node(3);
-    root->left->left = new Node(4);
-    root->left->right = new Node(5);
-    root->right->left = new Node(6);
-    root->right->right = new Node(7);
+// int main()
+// {
+//     Node *root = new Node(1);
+//     root->left = new Node(2);
+//     root->right = new Node(3);
+//     root->left->left = new Node(4);
+//     root->left->right = new Node(5);
+//     root->right->left = new Node(6);
+//     root->right->right = new Node(7);
 
-    // 非递归后序遍历
-    vector<int> result = PostOrderLoop(root);
+//     // 非递归后序遍历
+//     vector<int> result = PostOrderLoop(root);
 
-    // 打印
-    cout << "Post-order traversal (non-recursive): ";
-    for (int val : result)
-    {
-        cout << val << " ";
-    }
-    cout << endl;
+//     // 打印
+//     cout << "Post-order traversal (non-recursive): ";
+//     for (int val : result)
+//     {
+//         cout << val << " ";
+//     }
+//     cout << endl;
 
-    // 释放动态内存
-    delete root->left->left;
-    delete root->left->right;
-    delete root->right->left;
-    delete root->right->right;
-    delete root->left;
-    delete root->right;
-    delete root;
+//     // 释放动态内存
+//     delete root->left->left;
+//     delete root->left->right;
+//     delete root->right->left;
+//     delete root->right->right;
+//     delete root->left;
+//     delete root->right;
+//     delete root;
 
-    return 0;
-}
+//     return 0;
+// }
