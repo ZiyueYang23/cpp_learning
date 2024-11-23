@@ -2922,7 +2922,7 @@
 // struct Node
 // {
 //     int val;
-//     Node *left;  
+//     Node *left;
 //     Node *right;
 //     bool flag;
 //     Node(int num = 0) : val(num), right(nullptr), left(nullptr), flag(0) {}
@@ -2997,3 +2997,388 @@
 
 //     return 0;
 // }
+
+// #include <iostream>
+// #include <vector>
+// #include <queue>
+// using namespace std;
+
+// // 图的邻接表表示
+// class Graph
+// {
+// public:
+//     int vertices;                // 顶点数
+//     vector<vector<int>> adjList; // 邻接表
+
+//     Graph(int v) : vertices(v)
+//     {
+//         adjList.resize(v);
+//     }
+
+//     // 添加边
+//     void addEdge(int u, int v)
+//     {
+//         adjList[u].push_back(v);
+//         adjList[v].push_back(u); // 无向图
+//     }
+
+//     // 深度优先遍历
+//     void dfs(int start)
+//     {
+//         vector<bool> visited(vertices, false);
+//         cout << "DFS遍历序列:" << endl;
+//         dfsHelper(start, visited);
+//         cout << endl;
+//     }
+
+//     // 广度优先遍历
+//     void bfs(int start)
+//     {
+//         vector<bool> visited(vertices, false);
+//         queue<int> q;
+
+//         visited[start] = true;
+//         q.push(start);
+
+//         cout << "BFS遍历序列:" << endl;
+
+//         while (!q.empty())
+//         {
+//             int current = q.front();
+//             q.pop();
+//             cout << current << " ";
+
+//             for (int neighbor : adjList[current])
+//             {
+//                 if (!visited[neighbor])
+//                 {
+//                     visited[neighbor] = true;
+//                     q.push(neighbor);
+//                 }
+//             }
+//         }
+//         cout << endl;
+//     }
+
+// private:
+//     // DFS 辅助函数
+//     void dfsHelper(int current, vector<bool> &visited)
+//     {
+//         visited[current] = true;
+//         cout << current << " ";
+
+//         for (int neighbor : adjList[current])
+//         {
+//             if (!visited[neighbor])
+//             {
+//                 dfsHelper(neighbor, visited);
+//             }
+//         }
+//     }
+// };
+
+// int main()
+// {
+//     int vertices, edges;
+//     cout << "输入图的顶点数和边数:" << endl;
+//     cin >> vertices >> edges;
+
+//     Graph graph(vertices);
+
+//     cout << "输入每条边 (u v):" << endl;
+//     for (int i = 0; i < edges; i++)
+//     {
+//         int u, v;
+//         cin >> u >> v;
+//         graph.addEdge(u, v);
+//     }
+
+//     int start;
+//     cout << "输入起始顶点:" << endl;
+//     cin >> start;
+
+//     // 执行DFS和BFS
+//     graph.dfs(start);
+//     graph.bfs(start);
+
+//     return 0;
+// }
+
+// #include <iostream>
+// #include <vector>
+// #include <queue>
+// using namespace std;
+
+// // 图的邻接表表示
+// class Graph
+// {
+// public:
+//     int vertices;                // 顶点数
+//     vector<vector<int>> adjList; // 邻接表
+
+//     Graph(int v) : vertices(v)
+//     {
+//         adjList.resize(v);
+//     }
+
+//     // 添加边
+//     void addEdge(int u, int v)
+//     {
+//         adjList[u].push_back(v);
+//         adjList[v].push_back(u); // 无向图
+//     }
+
+//     // 深度优先生成树
+//     void dfsTree(int start)
+//     {
+//         vector<bool> visited(vertices, false);
+//         vector<pair<int, int>> treeEdges; // 存储生成树的边
+//         dfsHelper(start, visited, treeEdges, -1);
+
+//         // 输出生成树
+//         cout << "DFS生成树的边:" << endl;
+//         for (auto edge : treeEdges)
+//         {
+//             cout << edge.first << " - " << edge.second << endl;
+//         }
+//     }
+
+//     // 广度优先生成树
+//     void bfsTree(int start)
+//     {
+//         vector<bool> visited(vertices, false);
+//         vector<pair<int, int>> treeEdges; // 存储生成树的边
+//         queue<int> q;
+
+//         visited[start] = true;
+//         q.push(start);
+
+//         while (!q.empty())
+//         {
+//             int current = q.front();
+//             q.pop();
+
+//             for (int neighbor : adjList[current])
+//             {
+//                 if (!visited[neighbor])
+//                 {
+//                     visited[neighbor] = true;
+//                     treeEdges.emplace_back(current, neighbor); // 添加生成树的边
+//                     q.push(neighbor);
+//                 }
+//             }
+//         }
+
+//         // 输出生成树
+//         cout << "BFS生成树的边:" << endl;
+//         for (auto edge : treeEdges)
+//         {
+//             cout << edge.first << " - " << edge.second << endl;
+//         }
+//     }
+
+// private:
+//     // DFS 辅助函数
+//     void dfsHelper(int current, vector<bool> &visited, vector<pair<int, int>> &treeEdges, int parent)
+//     {
+//         visited[current] = true;
+
+//         if (parent != -1)
+//         {
+//             treeEdges.emplace_back(parent, current); // 添加生成树的边
+//         }
+
+//         for (int neighbor : adjList[current])
+//         {
+//             if (!visited[neighbor])
+//             {
+//                 dfsHelper(neighbor, visited, treeEdges, current);
+//             }
+//         }
+//     }
+// };
+
+// int main()
+// {
+//     int vertices, edges;
+//     cout << "输入图的顶点数和边数:" << endl;
+//     cin >> vertices >> edges;
+
+//     Graph graph(vertices);
+
+//     cout << "输入每条边 (u v):" << endl;
+//     for (int i = 0; i < edges; i++)
+//     {
+//         int u, v;
+//         cin >> u >> v;
+//         graph.addEdge(u, v);
+//     }
+
+//     int start;
+//     cout << "输入起始顶点:" << endl;
+//     cin >> start;
+
+//     // 输出 DFS 和 BFS 的生成树
+//     graph.dfsTree(start);
+//     graph.bfsTree(start);
+
+//     return 0;
+// }
+
+#include <iostream>
+
+using namespace std;
+
+struct BiTNode
+{
+    int val;
+    BiTNode *l_child;
+    BiTNode *r_child;
+    BiTNode(int num = 0) : val(num), l_child(nullptr), r_child(nullptr) {}
+};
+
+BiTNode *FindBinarySortTreeNode(BiTNode *&root, int val)
+{
+    if (root == nullptr)
+    {
+        return nullptr;
+    }
+    if (val == root->val)
+    {
+        return root;
+    }
+    else if (val < root->val)
+    {
+        return FindBinarySortTreeNode(root->l_child, val);
+    }
+    else
+    {
+        // val>root->val
+        return FindBinarySortTreeNode(root->r_child, val);
+    }
+}
+
+void InsertBinarySortTreeNode(BiTNode *&root, BiTNode *s)
+{
+    if (root == nullptr)
+    {
+        root = s;
+        return;
+    }
+
+    if (root->val == s->val)
+    {
+        return;
+    }
+    else if (s->val < root->val)
+    {
+        InsertBinarySortTreeNode(root->l_child, s);
+    }
+    else
+    {
+        // s->val>root->val
+        InsertBinarySortTreeNode(root->r_child, s);
+    }
+}
+
+void DeleteLeftChild(BiTNode *f, BiTNode *p)
+{
+    // f的左子节点p为空直接返回
+    if (p == nullptr)
+    {
+        return;
+    }
+    else if (p->l_child == nullptr && p->r_child == nullptr)
+    {
+        // 为叶子节点
+        delete p;
+        f->l_child = nullptr;
+    }
+    else if (p->l_child != nullptr && p->r_child == nullptr)
+    {
+        // 只有左子树
+        f->l_child = p->l_child;
+        p->l_child = nullptr;
+        delete p;
+    }
+    else if (p->l_child == nullptr && p->r_child != nullptr)
+    {
+        // 只有右子树
+        f->l_child = p->r_child;
+        p->r_child = nullptr;
+        delete p;
+    }
+    else
+    {
+        // 左右均不为空
+        BiTNode *s = p->r_child;
+        // 默认par就是p
+        BiTNode *par = p;
+
+        while (s->l_child != nullptr)
+        {
+            par = s;
+            s = s->l_child;
+        }
+
+        p->val = s->val;
+        if (par == p)
+        {
+            par->r_child = s->r_child;
+        }
+        else
+        {
+            par->l_child = s->r_child;
+        }
+        delete s;
+    }
+}
+
+void InOrderTraversal(BiTNode *root)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    InOrderTraversal(root->l_child);
+    cout << root->val << " ";
+    InOrderTraversal(root->r_child);
+}
+int main(void)
+{
+
+    BiTNode *root = nullptr;
+
+
+    int values[] = {50, 30, 20, 40, 70, 60, 80};
+    for (int val : values)
+    {
+        InsertBinarySortTreeNode(root, new BiTNode(val));
+    }
+
+    cout << "二叉排序树中序遍历结果: ";
+    InOrderTraversal(root);
+    cout << endl;
+
+    int find_val = 40;
+    BiTNode *found_node = FindBinarySortTreeNode(root, find_val);
+    if (found_node)
+    {
+        cout << "找到节点: " << found_node->val << endl;
+     }
+    else
+    {
+        cout << "未找到节点: " << find_val << endl;
+    }
+
+    // 删除左子节点
+    cout << "删除根节点的左子树（值为30）" << endl;
+    DeleteLeftChild(root, root->l_child);
+
+    cout << "删除后中序遍历结果: ";
+    InOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
