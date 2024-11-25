@@ -3225,160 +3225,237 @@
 //     return 0;
 // }
 
+// #include <iostream>
+
+// using namespace std;
+
+// struct BiTNode
+// {
+//     int val;
+//     BiTNode *l_child;
+//     BiTNode *r_child;
+//     BiTNode(int num = 0) : val(num), l_child(nullptr), r_child(nullptr) {}
+// };
+
+// BiTNode *FindBinarySortTreeNode(BiTNode *&root, int val)
+// {
+//     if (root == nullptr)
+//     {
+//         return nullptr;
+//     }
+//     if (val == root->val)
+//     {
+//         return root;
+//     }
+//     else if (val < root->val)
+//     {
+//         return FindBinarySortTreeNode(root->l_child, val);
+//     }
+//     else
+//     {
+//         // val>root->val
+//         return FindBinarySortTreeNode(root->r_child, val);
+//     }
+// }
+
+// void InsertBinarySortTreeNode(BiTNode *&root, BiTNode *s)
+// {
+//     if (root == nullptr)
+//     {
+//         root = s;
+//         return;
+//     }
+
+//     if (root->val == s->val)
+//     {
+//         return;
+//     }
+//     else if (s->val < root->val)
+//     {
+//         InsertBinarySortTreeNode(root->l_child, s);
+//     }
+//     else
+//     {
+//         // s->val>root->val
+//         InsertBinarySortTreeNode(root->r_child, s);
+//     }
+// }
+
+// void DeleteLeftChild(BiTNode *f, BiTNode *p)
+// {
+//     // f的左子节点p为空直接返回
+//     if (p == nullptr)
+//     {
+//         return;
+//     }
+//     else if (p->l_child == nullptr && p->r_child == nullptr)
+//     {
+//         // 为叶子节点
+//         delete p;
+//         f->l_child = nullptr;
+//     }
+//     else if (p->l_child != nullptr && p->r_child == nullptr)
+//     {
+//         // 只有左子树
+//         f->l_child = p->l_child;
+//         p->l_child = nullptr;
+//         delete p;
+//     }
+//     else if (p->l_child == nullptr && p->r_child != nullptr)
+//     {
+//         // 只有右子树
+//         f->l_child = p->r_child;
+//         p->r_child = nullptr;
+//         delete p;
+//     }
+//     else
+//     {
+//         // 左右均不为空
+//         BiTNode *s = p->r_child;
+//         // 默认par就是p
+//         BiTNode *par = p;
+
+//         while (s->l_child != nullptr)
+//         {
+//             par = s;
+//             s = s->l_child;
+//         }
+
+//         p->val = s->val;
+//         if (par == p)
+//         {
+//             par->r_child = s->r_child;
+//         }
+//         else
+//         {
+//             par->l_child = s->r_child;
+//         }
+//         delete s;
+//     }
+// }
+
+// void InOrderTraversal(BiTNode *root)
+// {
+//     if (root == nullptr)
+//     {
+//         return;
+//     }
+
+//     InOrderTraversal(root->l_child);
+//     cout << root->val << " ";
+//     InOrderTraversal(root->r_child);
+// }
+// int main(void)
+// {
+
+//     BiTNode *root = nullptr;
+
+//     int values[] = {50, 30, 20, 40, 70, 60, 80};
+//     for (int val : values)
+//     {
+//         InsertBinarySortTreeNode(root, new BiTNode(val));
+//     }
+
+//     cout << "二叉排序树中序遍历结果: ";
+//     InOrderTraversal(root);
+//     cout << endl;
+
+//     int find_val = 40;
+//     BiTNode *found_node = FindBinarySortTreeNode(root, find_val);
+//     if (found_node)
+//     {
+//         cout << "找到节点: " << found_node->val << endl;
+//      }
+//     else
+//     {
+//         cout << "未找到节点: " << find_val << endl;
+//     }
+
+//     // 删除左子节点
+//     cout << "删除根节点的左子树（值为30）" << endl;
+//     DeleteLeftChild(root, root->l_child);
+
+//     cout << "删除后中序遍历结果: ";
+//     InOrderTraversal(root);
+//     cout << endl;
+
+//     return 0;
+// }
+
 #include <iostream>
+#include <stack>
+#include <vector>
 
 using namespace std;
 
-struct BiTNode
+bool TopoSort(int num, vector<vector<int>> &adj_list)
 {
-    int val;
-    BiTNode *l_child;
-    BiTNode *r_child;
-    BiTNode(int num = 0) : val(num), l_child(nullptr), r_child(nullptr) {}
-};
+    vector<int> in_degree(num, 0);
+    stack<int> sta;
+    int count(0);
 
-BiTNode *FindBinarySortTreeNode(BiTNode *&root, int val)
-{
-    if (root == nullptr)
+    // 计算入度
+    for (int i = 0; i < num; i++)
     {
-        return nullptr;
-    }
-    if (val == root->val)
-    {
-        return root;
-    }
-    else if (val < root->val)
-    {
-        return FindBinarySortTreeNode(root->l_child, val);
-    }
-    else
-    {
-        // val>root->val
-        return FindBinarySortTreeNode(root->r_child, val);
-    }
-}
-
-void InsertBinarySortTreeNode(BiTNode *&root, BiTNode *s)
-{
-    if (root == nullptr)
-    {
-        root = s;
-        return;
-    }
-
-    if (root->val == s->val)
-    {
-        return;
-    }
-    else if (s->val < root->val)
-    {
-        InsertBinarySortTreeNode(root->l_child, s);
-    }
-    else
-    {
-        // s->val>root->val
-        InsertBinarySortTreeNode(root->r_child, s);
-    }
-}
-
-void DeleteLeftChild(BiTNode *f, BiTNode *p)
-{
-    // f的左子节点p为空直接返回
-    if (p == nullptr)
-    {
-        return;
-    }
-    else if (p->l_child == nullptr && p->r_child == nullptr)
-    {
-        // 为叶子节点
-        delete p;
-        f->l_child = nullptr;
-    }
-    else if (p->l_child != nullptr && p->r_child == nullptr)
-    {
-        // 只有左子树
-        f->l_child = p->l_child;
-        p->l_child = nullptr;
-        delete p;
-    }
-    else if (p->l_child == nullptr && p->r_child != nullptr)
-    {
-        // 只有右子树
-        f->l_child = p->r_child;
-        p->r_child = nullptr;
-        delete p;
-    }
-    else
-    {
-        // 左右均不为空
-        BiTNode *s = p->r_child;
-        // 默认par就是p
-        BiTNode *par = p;
-
-        while (s->l_child != nullptr)
+        for (auto neighbor : adj_list[i])
         {
-            par = s;
-            s = s->l_child;
+            // 非常巧妙，一层一层把入度计算
+            // eg.adj[0]:1->2->5->6-> ^
+            // 此时 neighbor会从1开始往后走，而in_degree数组根据下标正好就记录着每一个元素的入度
+            // 直接自加即可
+            in_degree[neighbor]++;
         }
+    }
 
-        p->val = s->val;
-        if (par == p)
+    // 入度为0的入栈
+    for (int i = 0; i < num; i++)
+    {
+        if (in_degree[i] == 0)
         {
-            par->r_child = s->r_child;
+            sta.push(i);
         }
-        else
+    }
+
+    while (!sta.empty())
+    {
+        int vj = sta.top();
+        sta.pop();
+        cout << vj << " ";
+        count++;
+
+        for (auto neighbor : adj_list[vj])
         {
-            par->l_child = s->r_child;
+            in_degree[neighbor]--;
+            if (in_degree[neighbor] == 0)
+            {
+                sta.push(neighbor);
+            }
         }
-        delete s;
     }
+
+    if (count < num)
+    {
+        cout << "\n图中有回路!" << endl;
+        return false;
+    }
+    cout << "\n拓扑排序完成!" << endl;
+    return true;
 }
-
-void InOrderTraversal(BiTNode *root)
+int main()
 {
-    if (root == nullptr)
-    {
-        return;
-    }
+    int num = 6;
+    vector<vector<int>> adj_list(num);
 
-    InOrderTraversal(root->l_child);
-    cout << root->val << " ";
-    InOrderTraversal(root->r_child);
-}
-int main(void)
-{
-
-    BiTNode *root = nullptr;
-
-
-    int values[] = {50, 30, 20, 40, 70, 60, 80};
-    for (int val : values)
-    {
-        InsertBinarySortTreeNode(root, new BiTNode(val));
-    }
-
-    cout << "二叉排序树中序遍历结果: ";
-    InOrderTraversal(root);
-    cout << endl;
-
-    int find_val = 40;
-    BiTNode *found_node = FindBinarySortTreeNode(root, find_val);
-    if (found_node)
-    {
-        cout << "找到节点: " << found_node->val << endl;
-     }
-    else
-    {
-        cout << "未找到节点: " << find_val << endl;
-    }
-
-    // 删除左子节点
-    cout << "删除根节点的左子树（值为30）" << endl;
-    DeleteLeftChild(root, root->l_child);
-
-    cout << "删除后中序遍历结果: ";
-    InOrderTraversal(root);
-    cout << endl;
+    // 假设有如下边：0->1, 0->2, 1->3, 1->4, 2->4, 3->5, 4->5
+    adj_list[0].push_back(1);
+    adj_list[0].push_back(2);
+    adj_list[1].push_back(3);
+    adj_list[1].push_back(4);
+    adj_list[2].push_back(4);
+    adj_list[3].push_back(5);
+    adj_list[4].push_back(5);
+ 
+    TopoSort(num, adj_list);
 
     return 0;
 }
