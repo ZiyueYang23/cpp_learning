@@ -3382,80 +3382,298 @@
 //     return 0;
 // }
 
-#include <iostream>
-#include <stack>
-#include <vector>
+// #include <iostream>
+// #include <stack>
+// #include <vector>
 
+// using namespace std;
+
+// bool TopoSort(int num, vector<vector<int>> &adj_list)
+// {
+//     vector<int> in_degree(num, 0);
+//     stack<int> sta;
+//     int count(0);
+
+//     // 计算入度
+//     for (int i = 0; i < num; i++)
+//     {
+//         for (auto neighbor : adj_list[i])
+//         {
+//             // 非常巧妙，一层一层把入度计算
+//             // eg.adj[0]:1->2->5->6-> ^
+//             // 此时 neighbor会从1开始往后走，而in_degree数组根据下标正好就记录着每一个元素的入度
+//             // 直接自加即可
+//             in_degree[neighbor]++;
+//         }
+//     }
+
+//     // 入度为0的入栈
+//     for (int i = 0; i < num; i++)
+//     {
+//         if (in_degree[i] == 0)
+//         {
+//             sta.push(i);
+//         }
+//     }
+
+//     while (!sta.empty())
+//     {
+//         int vj = sta.top();
+//         sta.pop();
+//         cout << vj << " ";
+//         count++;
+
+//         for (auto neighbor : adj_list[vj])
+//         {
+//             in_degree[neighbor]--;
+//             if (in_degree[neighbor] == 0)
+//             {
+//                 sta.push(neighbor);
+//             }
+//         }
+//     }
+
+//     if (count < num)
+//     {
+//         cout << "\n图中有回路!" << endl;
+//         return false;
+//     }
+//     cout << "\n拓扑排序完成!" << endl;
+//     return true;
+// }
+// int main()
+// {
+//     int num = 6;
+//     vector<vector<int>> adj_list(num);
+
+//     // 假设有如下边：0->1, 0->2, 1->3, 1->4, 2->4, 3->5, 4->5
+//     adj_list[0].push_back(1);
+//     adj_list[0].push_back(2);
+//     adj_list[1].push_back(3);
+//     adj_list[1].push_back(4);
+//     adj_list[2].push_back(4);
+//     adj_list[3].push_back(5);
+//     adj_list[4].push_back(5);
+
+//     TopoSort(num, adj_list);
+
+//     return 0;
+// }
+
+// #include <iostream>
+// #include <vector>
+
+// using namespace std;
+
+// // 快排
+// void QuickSort(int r[], int first, int end);
+// int Partition(int r[], int first, int end);
+// // 归并
+// void MergeSort(int arr[], int l, int r);
+// void Merge(int arr[], int l, int m, int r);
+
+// void QuickSort(int r[], int first, int end)
+// {
+//     if (first < end)
+//     {
+//         // 递归结束
+//         // 一次划分
+//         int pivot = Partition(r, first, end);
+//         // 递归地对左侧子序列进行快速排序
+//         QuickSort(r, first, pivot - 1);
+//         // 递归地对右侧子序列进行快速排序
+//         QuickSort(r, pivot + 1, end);
+//     }
+// }
+
+// int Partition(int r[], int first, int end)
+// {
+//     int i = first;
+//     int j = end;
+//     while (i < j)
+//     {
+//         while (i < j && r[i] <= r[j])
+//         {
+//             // 右侧扫描
+//             j--;
+//         }
+//         if (i < j)
+//         {
+//             // 无需添加头文件
+//             // 将较小记录交换到前面
+//             swap(r[i], r[j]);
+//             i++;
+//         }
+//         while (i < j && r[i] <= r[j])
+//         {
+//             // 左侧扫描
+//             i++;
+//         }
+//         if (i < j)
+//         {
+//             // 将较大记录交换到后面
+//             swap(r[j], r[i]);
+//             j--;
+//         }
+//     }
+//     return i;
+// }
+
+// void MergeSort(int arr[], int l, int r)
+// {
+//     // 递归结束条件
+//     if (l >= r)
+//     {
+//         return;
+//     }
+//     // 找中间点
+//     int m = l + (r - l) / 2;
+//     // 左半部分排序
+//     MergeSort(arr, l, m);
+//     // 右半部分排序
+//     MergeSort(arr, m + 1, r);
+//     // 合并两个已排序的子序列
+//     Merge(arr, l, m, r);
+// }
+
+// void Merge(int arr[], int l, int m, int r)
+// {
+//     int n1 = m - l + 1;
+//     int n2 = r - m;
+//     int *L = new int[n1];
+//     int *R = new int[n2];
+
+//     for (int i = 0; i < n1; i++)
+//     {
+
+//         L[i] = arr[l + i];
+//     }
+//     for (int i = 0; i < n2; i++)
+//     {
+//         R[i] = arr[m + 1 + i];
+//     }
+
+//     int i = 0, j = 0, k = l;
+//     while (i < n1 && j < n2)
+//     {
+//         if (L[i] <= R[j])
+//             arr[k++] = L[i++];
+//         else
+//             arr[k++] = R[j++];
+//     }
+//     while (i < n1)
+//     {
+//         arr[k++] = L[i++];
+//     }
+//     while (j < n2)
+//     {
+//         arr[k++] = R[j++];
+//     }
+
+//     delete[] L;
+//     delete[] R;
+// }
+
+// int main(void)
+// {
+
+//     vector<int> data_types[] = {
+//         {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},  // 单调递增
+//         {10, 9, 8, 7, 6, 5, 4, 3, 2, 1},  // 单调递减
+//         {4, 1, 7, 3, 8, 5, 2, 9, 6, 0},   // 随机数据
+//         {5, 5, 5, 5, 5, 5, 5, 5, 5, 5},   // 重复数据
+//         {10234, -5423, 23958, 0, 12345}}; // 乱码数据
+
+//     for (auto &data : data_types)
+//     {
+//         cout << "原始数据: ";
+//         for (int num : data)
+//             cout << num << " ";
+//         cout << endl;
+
+//         vector<int> data_quick = data, data_merge = data;
+
+//         QuickSort(data_quick.data(), 0, data_quick.size() - 1);
+//         cout << "快速排序后的数据: ";
+//         for (int num : data_quick)
+//             cout << num << " ";
+//         cout << endl;
+
+//         MergeSort(data_merge.data(), 0, data_merge.size() - 1);
+//         cout << "归并排序后的数据: ";
+//         for (int num : data_merge)
+//             cout << num << " ";
+//         cout << endl;
+
+//         cout << "----------------------------------" << endl;
+//     }
+
+//     return 0;
+// }
+
+#include <iostream>
 using namespace std;
 
-bool TopoSort(int num, vector<vector<int>> &adj_list)
+const int m = 10;
+int H[m] = {0};
+
+struct Record
 {
-    vector<int> in_degree(num, 0);
-    stack<int> sta;
-    int count(0);
+    int key;
+    int value;
+};
 
-    // 计算入度
-    for (int i = 0; i < num; i++)
-    {
-        for (auto neighbor : adj_list[i])
-        {
-            // 非常巧妙，一层一层把入度计算
-            // eg.adj[0]:1->2->5->6-> ^
-            // 此时 neighbor会从1开始往后走，而in_degree数组根据下标正好就记录着每一个元素的入度
-            // 直接自加即可
-            in_degree[neighbor]++;
-        }
-    }
-
-    // 入度为0的入栈
-    for (int i = 0; i < num; i++)
-    {
-        if (in_degree[i] == 0)
-        {
-            sta.push(i);
-        }
-    }
-
-    while (!sta.empty())
-    {
-        int vj = sta.top();
-        sta.pop();
-        cout << vj << " ";
-        count++;
-
-        for (auto neighbor : adj_list[vj])
-        {
-            in_degree[neighbor]--;
-            if (in_degree[neighbor] == 0)
-            {
-                sta.push(neighbor);
-            }
-        }
-    }
-
-    if (count < num)
-    {
-        cout << "\n图中有回路!" << endl;
-        return false;
-    }
-    cout << "\n拓扑排序完成!" << endl;
-    return true;
+// 哈希函数
+int hashFunction(int key)
+{
+    return key % m;
 }
+
+// 精髓部分
+void insertRecord(Record R)
+{
+    // 计算哈希值
+    int index = hashFunction(R.key);
+    // 记录原始哈希位置
+    int originalIndex = index;
+
+    // 线性探测
+    while (H[index] != 0)
+    {
+        // 如果该位置已经被占用，检查下一个位置
+        // 线性探测，循环回到0
+        index = (index + 1) % m;
+        // 如果回到了原始位置，说明哈希表已满
+        if (index == originalIndex)
+        {
+            cout << "Hash table is full!" << endl;
+            return;
+        }
+    }
+
+    H[index] = R.key;
+    cout << "Record with key " << R.key << " inserted at index " << index << endl;
+}
+
 int main()
 {
-    int num = 6;
-    vector<vector<int>> adj_list(num);
+    Record R1 = {25, 100};
+    Record R2 = {35, 200};
+    Record R3 = {15, 300};
+    Record R4 = {45, 400};
+    Record R5 = {5, 500};
 
-    // 假设有如下边：0->1, 0->2, 1->3, 1->4, 2->4, 3->5, 4->5
-    adj_list[0].push_back(1);
-    adj_list[0].push_back(2);
-    adj_list[1].push_back(3);
-    adj_list[1].push_back(4);
-    adj_list[2].push_back(4);
-    adj_list[3].push_back(5);
-    adj_list[4].push_back(5);
- 
-    TopoSort(num, adj_list);
+    insertRecord(R1);
+    insertRecord(R2);
+    insertRecord(R3);
+    insertRecord(R4);
+    insertRecord(R5);
+
+    cout << "Hash table after insertions: " << endl;
+    for (int i = 0; i < m; ++i)
+    {
+        cout << "H[" << i << "] = " << H[i] << endl;
+    }
 
     return 0;
 }
