@@ -3611,69 +3611,69 @@
 //     return 0;
 // }
 
-#include <iostream>
-using namespace std;
+// #include <iostream>
+// using namespace std;
 
-const int m = 10;
-int H[m] = {0};
+// const int m = 10;
+// int H[m] = {0};
 
-struct Record
-{
-    int key;
-    int value;
-};
+// struct Record
+// {
+//     int key;
+//     int value;
+// };
 
-// 哈希函数
-int hashFunction(int key)
-{
-    return key % m;
-}
+// // 哈希函数
+// int hashFunction(int key)
+// {
+//     return key % m;
+// }
 
-// 精髓部分
-void insertRecord(Record R)
-{
-    // 计算哈希值
-    int index = hashFunction(R.key);
-    // 记录原始哈希位置
-    int originalIndex = index;
+// // 精髓部分
+// void insertRecord(Record R)
+// {
+//     // 计算哈希值
+//     int index = hashFunction(R.key);
+//     // 记录原始哈希位置
+//     int originalIndex = index;
 
-    // 线性探测
-    while (H[index] != 0)
-    {
-        // 如果该位置已经被占用，检查下一个位置
-        // 线性探测，循环回到0
-        index = (index + 1) % m;
-        // 如果回到了原始位置，说明哈希表已满
-        if (index == originalIndex)
-        {
-            cout << "Hash table is full!" << endl;
-            return;
-        }
-    }
+//     // 线性探测
+//     while (H[index] != 0)
+//     {
+//         // 如果该位置已经被占用，检查下一个位置
+//         // 线性探测，循环回到0
+//         index = (index + 1) % m;
+//         // 如果回到了原始位置，说明哈希表已满
+//         if (index == originalIndex)
+//         {
+//             cout << "Hash table is full!" << endl;
+//             return;
+//         }
+//     }
 
-    H[index] = R.key;
-    cout << "Record with key " << R.key << " inserted at index " << index << endl;
-}
+//     H[index] = R.key;
+//     cout << "Record with key " << R.key << " inserted at index " << index << endl;
+// }
 
-int main()
-{
-    Record R1 = {25, 100};
-    Record R2 = {35, 200};
-    Record R3 = {15, 300};
-    Record R4 = {45, 400};
-    Record R5 = {5, 500};
+// int main()
+// {
+//     Record R1 = {25, 100};
+//     Record R2 = {35, 200};
+//     Record R3 = {15, 300};
+//     Record R4 = {45, 400};
+//     Record R5 = {5, 500};
 
-    insertRecord(R1);
-    insertRecord(R2);
-    insertRecord(R3);
-    insertRecord(R4);
-    insertRecord(R5);
+//     insertRecord(R1);
+//     insertRecord(R2);
+//     insertRecord(R3);
+//     insertRecord(R4);
+//     insertRecord(R5);
 
-    cout << "Hash table after insertions: " << endl;
-    for (int i = 0; i < m; ++i)
-    {
-        cout << "H[" << i << "] = " << H[i] << endl;
-    }
+//     cout << "Hash table after insertions: " << endl;
+//     for (int i = 0; i < m; ++i)
+//     {
+//         cout << "H[" << i << "] = " << H[i] << endl;
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
